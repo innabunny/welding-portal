@@ -12,14 +12,14 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+$primary   : #0f7a63;  // изумруд — основной акцент
+$secondary : #10302a;  // тёмный изумруд — вторичное
+$accent    : #1d9e75;  // светлее primary — доп. акцент
 
-$dark: #1d1d1d;
-$dark-page: #121212;
+$dark      : #10302a;  // тёмный изумруд (не чёрный — теплее, в тему)
+$dark-page : #0c231e;  // фон в тёмной теме (глубокий изумруд-графит)
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+$positive  : #3f6b52;  // «действует» — приглушённый зелёный
+$negative  : #9c4b45;  // «просрочено» — пыльно-красный, не кричащий
+$info       : #2f5d8a;  // спокойный синий
+$warning   : #8a6d2f;  // «истекает» — тёплый охристый

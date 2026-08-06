@@ -40,6 +40,30 @@ export default defineRouter((/* { store, ssrContext } */) => {
             path: '/equipment',
             component: () => import('@/pages/EquipmentPage.vue'),
           },
+           {
+            path: '/references',
+            component: () => import('@/pages/ReferencesPage.vue'),
+          },
+            {
+            path: '/users',
+            component: () => import('@/pages/UsersPage.vue'),
+          },
+           {
+            path: '/certification',
+            component: () => import('@/pages/AttestationPage.vue'),
+          },
+           {
+            path: '/maintenance',
+            component: () => import('@/pages/MaintenancePage.vue'),
+          },
+              {
+            path: '/tech-process',
+            component: () => import('@/pages/WeldingCard.Page.vue'),
+          },
+              {
+            path: '/welding-cards',
+            component: () => import('@/pages/WeldingCardsArchivePage.vue'),
+          },
         ],
       },
       {

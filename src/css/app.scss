@@ -1,1 +1,40 @@
-// app global css
+:root {
+  --app-bg: #f1f7f4; // фон страниц 
+  --app-surface: #ffffff; // карточки, таблицы
+  --app-ink: #10302a; // заголовки 
+  --app-ink-soft: #4a6b60; // вторичный текст 
+  --app-border: #dce8e3; // рамки
+
+  // светофор статусов
+  --status-valid-bg: #e7f0ea;
+  --status-valid-fg: #3f6b52;
+  --status-soon-bg: #f5edda;
+  --status-soon-fg: #8a6d2f;
+  --status-overdue-bg: #f2e4e2;
+  --status-overdue-fg: #9c4b45;
+  --status-none-bg: #eceef1;
+  --status-none-fg: #6b7a90;
+}
+
+/* тонкий деловой скроллбар — глобально */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--app-border);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--q-primary);
+}
+
+/* Firefox — свой синтаксис, без псевдоэлементов */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-border) transparent;
+}
+

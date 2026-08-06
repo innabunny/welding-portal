@@ -1,6 +1,6 @@
 <template>
   <q-page class="dashboard q-pa-lg">
-    <h1 class="greeting">Здравствуйте, {{ auth.user?.name }}!</h1>
+    <div class="greeting">Здравствуйте, {{ auth.user?.name }}!</div>
 
     <div class="cards-grid">
       <q-card
@@ -33,8 +33,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-
-type Role = 'admin' | 'user';
+import type { UserRole } from '@/shared/types/user';
 
 interface DashboardSection {
   key: string;
@@ -42,7 +41,7 @@ interface DashboardSection {
   subtitle: string;
   icon: string;
   to: string;
-  roles?: Role[]; // не указано — видно всем ролям
+  roles?: UserRole[]; // не указано — видно всем ролям
   wip?: boolean; // "в разработке" — карточка неактивна
 }
 
@@ -134,44 +133,40 @@ function openSection(section: DashboardSection): void {
 
 <style scoped>
 .dashboard {
-  --steel: #2d4a7c;
-  --steel-soft: rgba(45, 74, 124, 0.08);
-  background: #f3f6fa;
+  background: var(--app-bg);
   min-height: 100%;
 }
 
 .greeting {
   font-size: 22px;
   font-weight: 600;
-  color: #1d2b45;
-  margin: 4px 0 24px;
+  color: var(--app-ink);
+  margin: 18px 10px;
 }
 
 /* сетка сама раскладывает карточки по ширине, без возни с брейкпоинтами */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
 
 .section-card {
   position: relative;
   height: 100%;
+  min-height: 200px;
   padding: 22px 20px;
   border-radius: 14px;
-  background: #fff;
-  border: 1px solid rgba(45, 74, 124, 0.452);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
   cursor: pointer;
   transition:
     transform 0.15s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease;
+    box-shadow 0.15s ease;
 }
 
 .section-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(45, 74, 124, 0.671);
-  box-shadow: 0 8px 22px rgba(45, 74, 124, 0.1);
 }
 
 /* карточка "в разработке" — приглушённая и некликабельная на вид */
@@ -183,7 +178,12 @@ function openSection(section: DashboardSection): void {
 .section-card--wip:hover {
   transform: none;
   box-shadow: none;
-  border-color: rgba(45, 74, 124, 0.08);
+  border-color: var(--app-border);
+}
+
+.section-card:hover .icon-tile {
+  background: var(--q-primary);
+  color: #fff;
 }
 
 .wip-badge {
@@ -201,22 +201,22 @@ function openSection(section: DashboardSection): void {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--steel-soft);
-  color: var(--steel);
+  background: var(--status-valid-bg);
+  color: var(--q-primary);
   margin-bottom: 16px;
 }
 
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1d2b45;
+  color: var(--app-ink);
   line-height: 1.3;
   margin-bottom: 6px;
 }
 
 .section-subtitle {
   font-size: 12.5px;
-  color: #6b7a90;
+  color: var(--app-ink-soft);
   line-height: 1.4;
 }
 </style>

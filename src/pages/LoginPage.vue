@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div class="text-h6 text-weight-medium q-mb-xs login-heading">Вход в систему</div>
+      <div class="text-h6 text-weight-medium q-mb-xs">Вход в систему</div>
       <div class="text-caption text-grey-7 q-mb-lg">Введите логин и пароль</div>
 
       <q-form @submit.prevent="handleLogin" class="login-form">
@@ -77,7 +77,8 @@
           label="Войти"
           type="submit"
           unelevated
-          class="full-width q-py-sm q-mt-sm login-btn"
+          class="full-width q-py-sm q-mt-sm"
+          color="primary"
           size="md"
           :loading="authStore.loading"
         />
@@ -117,13 +118,11 @@ const handleLogin = async (): Promise<void> => {
 
 <style scoped>
 .login-page {
-  --steel: #2d4a7c;
-  --steel-hover: #35568c;
-  --grid-line: rgba(45, 74, 124, 0.06);
+  --grid-line: rgba(15, 122, 99, 0.06);
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: #f3f6fa;
+  background: var(--app-bg);
 }
 
 /* фоновый слой */
@@ -158,7 +157,7 @@ const handleLogin = async (): Promise<void> => {
 .glow-1 {
   width: 460px;
   height: 460px;
-  background: #d6e2f5;
+  background: #d6efe6; ;
   top: -140px;
   right: -120px;
   animation: float1 16s ease-in-out infinite;
@@ -167,7 +166,7 @@ const handleLogin = async (): Promise<void> => {
 .glow-2 {
   width: 380px;
   height: 380px;
-  background: #e2e9f4;
+  background:#d6efe6; ;
   bottom: -130px;
   left: -110px;
   animation: float2 20s ease-in-out infinite;
@@ -201,21 +200,21 @@ const handleLogin = async (): Promise<void> => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--steel);
-  box-shadow: 0 4px 12px rgba(45, 74, 124, 0.25);
+  background: var(q-primary);
+  box-shadow: 0 4px 12px rgba(15, 122, 99, 0.25);
   flex-shrink: 0;
 }
 
 .brand-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1d2b45;
+  color: var(--app-ink);
   line-height: 1.2;
 }
 
 .brand-sub {
   font-size: 11px;
-  color: #6b7a90;
+  color: var(--app-ink-soft);
   letter-spacing: 0.2px;
 }
 
@@ -226,39 +225,44 @@ const handleLogin = async (): Promise<void> => {
 }
 
 .login-heading {
-  color: #1d2b45;
+  color: var(--app-ink);
 }
-
-.login-btn {
-  background: var(--steel);
-  color: #fff;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  transition: background 0.2s;
-}
-
-.login-btn:hover {
-  background: var(--steel-hover);
-}
-
 .error-banner {
   border: 1px solid rgba(198, 40, 40, 0.15);
 }
 
 /* анимации */
 @keyframes drift {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 44px 44px, 44px 44px; }
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      44px 44px,
+      44px 44px;
+  }
 }
 
 @keyframes float1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-24px, 18px) scale(1.06); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-24px, 18px) scale(1.06);
+  }
 }
 
 @keyframes float2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(18px, -14px) scale(1.08); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(18px, -14px) scale(1.08);
+  }
 }
 
 .shake-enter-active {
@@ -266,10 +270,21 @@ const handleLogin = async (): Promise<void> => {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }
 </style>

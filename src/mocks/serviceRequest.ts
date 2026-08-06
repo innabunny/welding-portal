@@ -1,0 +1,43 @@
+import type { ServiceRequest } from '@/shared/types/serviceRequest';
+
+export const mockServiceRequests: ServiceRequest[] = [
+  {
+    id: 1,
+    date: new Date().toISOString().slice(0, 10),
+    equipmentId: 1,
+    equipmentName: 'УДГУ-351',
+    workshopId: 1,
+    masterLogin: 'master',
+    masterName: 'Петров П.П.',
+    reason: 'неисправность',
+    description: 'Нестабильная дуга, пропадает ток.',
+    priority: 'высокая',
+    status: 'новая',
+  },
+  {
+    id: 2,
+    date: new Date().toISOString().slice(0, 10),
+    equipmentId: 4,
+    equipmentName: 'ПДГ-508',
+    workshopId: 2,
+    masterLogin: 'mechanic',
+    masterName: 'Петров П.П.',
+    reason: 'диагностика',
+    description: 'Плановая проверка перед аттестацией.',
+    priority: 'средняя',
+    status: 'в работе',
+  },
+  {
+    id: 3,
+    date: new Date().toISOString().slice(0, 10),
+    equipmentId: 4,
+    equipmentName: 'ПДГ-508',
+    workshopId: 2,
+    masterLogin: 'master',
+    masterName: 'Петров П.П.',
+    reason: 'диагностика',
+    description: 'Плановая проверка перед аттестацией.',
+    priority: 'средняя',
+    status: 'в работе',
+  },
+];

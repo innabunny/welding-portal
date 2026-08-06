@@ -1,47 +1,47 @@
 // stores/auth.ts
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { User, Credentials } from '@/shared/types/auth';
+import { usersApi } from '@/shared/services/usersApi';
+import type { User } from '@/shared/types/user';
+
+interface Credentials {
+  login: string;
+  password: string;
+}
+
+type SafeUser = Omit<User, 'password'>;
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null);
+  const user = ref<SafeUser | null>(JSON.parse(localStorage.getItem('user') || 'null'));
   const loading = ref<boolean>(false);
   const isAuthenticated = computed<boolean>(() => !!user.value);
 
-  function login(credentials: Credentials): Promise<void> {
+  async function login(credentials: Credentials): Promise<void> {
     loading.value = true;
 
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.login === 'admin' && credentials.password === 'admin') {
-          user.value = {
-            id: 1,
-            login: credentials.login,
-            role: 'admin',
-            name: 'Администратор',
-          };
-          loading.value = false;
-          resolve();
-        } else if (credentials.login === 'технолог' && credentials.password === '1234') {
-          user.value = {
-            id: 2,
-            login: credentials.login,
-            role: 'user',
-            name: 'Технолог',
-          };
-          loading.value = false;
-          resolve();
-        } else {
-          loading.value = false;
-          reject(new Error('Неверный логин или пароль'));
-        }
-      }, 800);
-    });
+    try {
+      const found = await usersApi.authenticate(credentials.login, credentials.password);
+      if (!found) throw new Error('Неверный логин или пароль');
+      if (!found.active) throw new Error('Учётная запись заблокирована');
+      user.value = {
+        id: found.id,
+        login: found.login,
+        name: found.name,
+        role: found.role,
+        active: found.active,
+        workshopId: found.workshopId ?? null,
+      };
+
+      localStorage.setItem('user', JSON.stringify(user.value));
+    } finally {
+      loading.value = false;
+    }
   }
 
   function logout(): void {
     user.value = null;
     loading.value = false;
+    localStorage.removeItem('user');
   }
 
   return { user, loading, isAuthenticated, login, logout };

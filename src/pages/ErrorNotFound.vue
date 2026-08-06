@@ -13,6 +13,7 @@
         icon="home"
         label="На главную"
         class="home-btn q-mt-lg"
+        color="primary"
         to="/"
       />
     </div>
@@ -21,9 +22,8 @@
 
 <style scoped>
 .notfound {
-  --steel: #2d4a7c;
-  --steel-hover: #35568c;
-  background: #f3f6fa;
+
+  background: var(--app-bg);
   min-height: 100vh;
 }
 
@@ -37,20 +37,20 @@
   font-weight: 700;
   line-height: 1;
   letter-spacing: 2px;
-  color: var(--steel);
+  color: primary;
   opacity: 0.14;
 }
 
 .title {
   font-size: 22px;
   font-weight: 600;
-  color: #1d2b45;
+  color: var(--app-ink);
   margin-top: -12px;
 }
 
 .subtitle {
   font-size: 13.5px;
-  color: #6b7a90;
+  color: var(--app-ink-soft);
   margin-top: 8px;
   max-width: 320px;
   margin-left: auto;
@@ -59,8 +59,6 @@
 }
 
 .home-btn {
-  background: var(--steel);
-  color: #fff;
   font-weight: 500;
   letter-spacing: 0.3px;
   padding: 8px 22px;
@@ -68,6 +66,6 @@
 }
 
 .home-btn:hover {
-  background: var(--steel-hover);
+  background: var(--app-bg);
 }
 </style>

@@ -10,11 +10,12 @@ export const mockMethods: WeldingMethod[] = [
 ];
 
 export const mockEquipment: Equipment[] = [
-  { id: 1, name: 'УДГУ-351', method: 'rad' },
-  { id: 2, name: 'УСГ-1800-1200-2000-КНВ', method: 'mad' },
-  { id: 3, name: 'ОДА-СП', method: 'mad' },
-  { id: 4, name: 'ПДГ-508', method: 'mp' },
-  { id: 5, name: 'УПС-301', method: 'plasma' },
-  { id: 6, name: 'ЭЛУ-9Б', method: 'ebw' },
-  { id: 7, name: 'СДВУ-50', method: 'diff' },
+  { id: 1, name: 'УДГУ-351', method: 'rad', workshopId: 1 },
+  { id: 2, name: 'УСГ-1800-1200-2000-КНВ', method: 'mad', workshopId: 3},
+  { id: 3, name: 'ОДА-СП', method: 'mad', workshopId: 3 },
+  { id: 4, name: 'ПДГ-508', method: 'mp', workshopId: 2 },
+  { id: 5, name: 'УПС-301', method: 'plasma', workshopId: 1 },
+  { id: 6, name: 'ЭЛУ-9Б', method: 'ebw', workshopId: 2 },
+  { id: 7, name: 'СДВУ-50', method: 'diff', workshopId: 1},
+
 ];
