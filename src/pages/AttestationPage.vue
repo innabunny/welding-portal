@@ -1,17 +1,19 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="text-h6 text-weight-medium q-mb-md" style="color: var(--app-ink)">
-      Аттестация сварщиков
-    </div>
+    <div class="page-content">
 
-    <q-tabs
+      <div class="text-h6 text-weight-medium q-mb-md" style="color: var(--app-ink)">
+        Аттестация сварщиков
+      </div>
+
+      <q-tabs
       v-model="tab"
       align="left"
       no-caps
       active-color="primary"
       indicator-color="primary"
       class="text-grey-7 q-mb-md"
-    >
+      >
       <q-tab name="periodic" label="Периодическая" />
       <q-tab name="primary" label="Первичная" />
       <q-tab name="help" label="Как заполнять" />
@@ -21,30 +23,30 @@
       <!-- ============ ПЕРИОДИЧЕСКАЯ: реестр ============ -->
       <q-tab-panel name="periodic" class="q-pa-none">
         <q-banner
-          v-if="attention.overdue || attention.soon"
-          dense
-          rounded
-          class="q-mb-md attention"
+        v-if="attention.overdue || attention.soon"
+        dense
+        rounded
+        class="q-mb-md attention"
         >
-          <template #avatar><q-icon name="warning_amber" color="orange-8" /></template>
-          Требуют внимания:
-          <b v-if="attention.overdue" class="text-red-8">просрочено {{ attention.overdue }}</b>
-          <span v-if="attention.overdue && attention.soon">, </span>
-          <b v-if="attention.soon" style="color: #8a6d2f">истекает {{ attention.soon }}</b>
-          — пора переаттестовывать.
-        </q-banner>
+        <template #avatar><q-icon name="warning_amber" color="orange-8" /></template>
+        Требуют внимания:
+        <b v-if="attention.overdue" class="text-red-8">просрочено {{ attention.overdue }}</b>
+        <span v-if="attention.overdue && attention.soon">, </span>
+        <b v-if="attention.soon" style="color: #8a6d2f">истекает {{ attention.soon }}</b>
+        — пора переаттестовывать.
+      </q-banner>
 
-        <q-table
-          :rows="sortedRows"
-          :columns="columns"
-          row-key="id"
-          :loading="store.loading"
+      <q-table
+      :rows="sortedRows"
+      :columns="columns"
+      row-key="id"
+      :loading="store.loading"
           flat
           bordered
           :rows-per-page-options="[0]"
           hide-pagination
         >
-          <template #body="props">
+        <template #body="props">
             <!-- строка-заголовок цеха при смене группы -->
             <q-tr v-if="props.row.__groupStart" no-hover>
               <q-td colspan="100%" class="group-row">
@@ -72,45 +74,45 @@
               </q-td>
               <q-td key="actions" :props="props" class="text-right" style="white-space: nowrap">
                 <q-btn
-                  flat
-                  dense
-                  no-caps
-                  size="sm"
-                  label="Продлить"
-                  color="primary"
-                  @click="renew(props.row)"
+                flat
+                dense
+                no-caps
+                size="sm"
+                label="Продлить"
+                color="primary"
+                @click="renew(props.row)"
                 />
                 <q-btn
-                  flat
-                  dense
+                flat
+                dense
                   round
                   size="sm"
                   icon="description"
                   color="grey-7"
                   @click="openProtocol(props.row)"
-                >
+                  >
                   <q-tooltip>Протокол</q-tooltip>
                 </q-btn>
                 <q-btn
-                  flat
-                  dense
-                  round
-                  size="sm"
-                  icon="badge"
-                  color="grey-7"
-                  @click="openCert(props.row)"
+                flat
+                dense
+                round
+                size="sm"
+                icon="badge"
+                color="grey-7"
+                @click="openCert(props.row)"
                 >
-                  <q-tooltip>Удостоверение</q-tooltip>
-                </q-btn>
-                <q-btn
-                  flat
-                  dense
+                <q-tooltip>Удостоверение</q-tooltip>
+              </q-btn>
+              <q-btn
+              flat
+              dense
                   round
                   size="sm"
                   icon="delete"
                   color="grey-6"
                   @click="removeWelder(props.row)"
-                >
+                  >
                   <q-tooltip>Удалить</q-tooltip>
                 </q-btn>
               </q-td>
@@ -129,20 +131,20 @@
       <q-tab-panel name="primary" class="q-pa-none">
         <q-card flat bordered style="max-width: 720px">
           <q-card-section class="text-subtitle1 text-weight-medium"
-            >Первичная аттестация сварщика</q-card-section
+          >Первичная аттестация сварщика</q-card-section
           >
           <q-form @submit.prevent="submitPrimary">
             <q-card-section class="q-gutter-md">
               <div class="row q-col-gutter-md">
                 <q-input
-                  class="col-12 col-sm-6"
-                  v-model="form.fio"
-                  label="ФИО"
-                  outlined
-                  dense
+                class="col-12 col-sm-6"
+                v-model="form.fio"
+                label="ФИО"
+                outlined
+                dense
                   :rules="[(v: string) => !!v || 'Укажите ФИО']"
-                />
-                <q-select
+                  />
+                  <q-select
                   class="col-12 col-sm-6"
                   v-model="form.workshopId"
                   label="Цех"
@@ -152,8 +154,8 @@
                   emit-value
                   map-options
                   clearable
-                />
-                <q-select
+                  />
+                  <q-select
                   class="col-12 col-sm-6"
                   v-model="form.method"
                   label="Способ сварки"
@@ -165,37 +167,37 @@
                   :rules="[(v: string) => !!v || 'Выберите способ']"
                 />
                 <q-select
-                  class="col-12 col-sm-6"
-                  v-model="form.production"
-                  label="Производство"
-                  outlined
-                  dense
-                  :options="['основное', 'вспомогательное']"
+                class="col-12 col-sm-6"
+                v-model="form.production"
+                label="Производство"
+                outlined
+                dense
+                :options="['основное', 'вспомогательное']"
                 />
                 <q-input
-                  class="col-6 col-sm-3"
-                  v-model.number="form.thFrom"
-                  type="number"
-                  label="Толщина от, мм"
-                  outlined
-                  dense
+                class="col-6 col-sm-3"
+                v-model.number="form.thFrom"
+                type="number"
+                label="Толщина от, мм"
+                outlined
+                dense
                 />
                 <q-input
-                  class="col-6 col-sm-3"
-                  v-model.number="form.thTo"
+                class="col-6 col-sm-3"
+                v-model.number="form.thTo"
                   type="number"
                   label="Толщина до, мм"
                   outlined
                   dense
-                />
-                <q-input
+                  />
+                  <q-input
                   class="col-12 col-sm-3"
                   v-model="form.certNo"
                   label="№ удостоверения"
                   outlined
                   dense
-                />
-                <q-input
+                  />
+                  <q-input
                   class="col-12 col-sm-3"
                   v-model="form.attDate"
                   type="date"
@@ -203,48 +205,48 @@
                   stack-label
                   outlined
                   dense
-                />
-              </div>
+                  />
+                </div>
 
-              <div class="text-subtitle2 text-weight-medium q-mt-md" style="color: var(--app-ink)">
+                <div class="text-subtitle2 text-weight-medium q-mt-md" style="color: var(--app-ink)">
                 Результаты испытаний
               </div>
               <div class="row q-col-gutter-md">
                 <q-input class="col-12 col-sm-6" v-model="proto.vik" label="ВИК" outlined dense />
                 <q-input
-                  class="col-12 col-sm-6"
-                  v-model="proto.rk"
-                  label="РК / УЗК"
-                  outlined
-                  dense
+                class="col-12 col-sm-6"
+                v-model="proto.rk"
+                label="РК / УЗК"
+                outlined
+                dense
                 />
                 <q-input
-                  class="col-12 col-sm-6"
-                  v-model="proto.mech"
-                  label="Механические испытания"
-                  outlined
-                  dense
+                class="col-12 col-sm-6"
+                v-model="proto.mech"
+                label="Механические испытания"
+                outlined
+                dense
                 />
                 <q-input
-                  class="col-12 col-sm-6"
-                  v-model="proto.metal"
-                  label="Металлография"
-                  outlined
-                  dense
+                class="col-12 col-sm-6"
+                v-model="proto.metal"
+                label="Металлография"
+                outlined
+                dense
                 />
                 <q-input
-                  class="col-12"
-                  v-model="proto.concl"
-                  label="Заключение (на что аттестован)"
-                  outlined
-                  dense
+                class="col-12"
+                v-model="proto.concl"
+                label="Заключение (на что аттестован)"
+                outlined
+                dense
                 />
                 <q-input
-                  class="col-12"
-                  v-model="proto.commission"
-                  label="Комиссия"
-                  outlined
-                  dense
+                class="col-12"
+                v-model="proto.commission"
+                label="Комиссия"
+                outlined
+                dense
                 />
               </div>
             </q-card-section>
@@ -264,6 +266,7 @@
 
     <ProtocolDoc v-model="protocolOpen" :welder="selected" />
     <CertificateDoc v-model="certOpen" :welder="selected" />
+  </div>
   </q-page>
 </template>
 

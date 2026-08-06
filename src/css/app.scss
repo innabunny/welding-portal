@@ -16,6 +16,16 @@
   --status-none-fg: #6b7a90;
 }
 
+main {
+  background: var(--app-bg);
+}
+
+.page-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 /* тонкий деловой скроллбар — глобально */
 ::-webkit-scrollbar {
   width: 8px;

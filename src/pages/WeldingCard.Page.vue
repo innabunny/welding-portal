@@ -1,13 +1,15 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="text-h6 text-weight-medium q-mb-md" style="color: var(--app-ink)">
-      Разработка технологической карты
-    </div>
-    <template v-if="!cardStore.draft">
-      <q-card flat bordered style="max-width: 720px">
-        <q-card-section class="q-gutter-md">
-          <!-- шаг 1: способ сварки -->
-          <q-select
+    <div class="page-content">
+
+      <div class="text-h6 text-weight-medium q-mb-md" style="color: var(--app-ink)">
+        Разработка технологической карты
+      </div>
+      <template v-if="!cardStore.draft">
+        <q-card flat bordered style="max-width: 720px">
+          <q-card-section class="q-gutter-md">
+            <!-- шаг 1: способ сварки -->
+            <q-select
             v-model="method"
             label="Способ сварки"
             outlined
@@ -17,13 +19,13 @@
             emit-value
             map-options
             @update:model-value="onMethodChange"
-          />
+            />
 
-          <!-- шаг 2: оборудование этого способа -->
-          <template v-if="method">
-            <div class="text-subtitle2 text-grey-7">Оборудование</div>
-            <div v-if="equipmentForMethod.length" class="eq-grid">
-              <q-card
+            <!-- шаг 2: оборудование этого способа -->
+            <template v-if="method">
+              <div class="text-subtitle2 text-grey-7">Оборудование</div>
+              <div v-if="equipmentForMethod.length" class="eq-grid">
+                <q-card
                 v-for="eq in equipmentForMethod"
                 :key="eq.id"
                 flat
@@ -31,7 +33,7 @@
                 class="eq-card"
                 :class="{ 'eq-card--sel': cardStore.selectedEquipment?.id === eq.id }"
                 @click="cardStore.selectEquipment(eq)"
-              >
+                >
                 <div class="text-weight-medium">{{ eq.name }}</div>
                 <div class="text-caption text-grey-6">{{ methodName }}</div>
               </q-card>
@@ -45,12 +47,12 @@
 
         <q-card-actions align="right" class="q-pa-md">
           <q-btn
-            unelevated
-            no-caps
-            label="Начать карту"
-            color="primary"
-            :disable="!cardStore.canStart()"
-            @click="startCard"
+          unelevated
+          no-caps
+          label="Начать карту"
+          color="primary"
+          :disable="!cardStore.canStart()"
+          @click="startCard"
           />
         </q-card-actions>
       </q-card>
@@ -63,23 +65,23 @@
         </div>
         <q-space />
         <q-btn
-          v-if="cardStore.isFromArchive"
-          flat
-          no-caps
-          icon="arrow_back"
-          label="В архив"
-          color="grey-7"
-          class="q-mr-sm"
-          @click="backToArchive"
+        v-if="cardStore.isFromArchive"
+        flat
+        no-caps
+        icon="arrow_back"
+        label="В архив"
+        color="grey-7"
+        class="q-mr-sm"
+        @click="backToArchive"
         />
         <q-btn
-          v-else
-          flat
-          no-caps
-          icon="arrow_back"
-          label="К выбору"
-          color="grey-7"
-          @click="cardStore.resetCard()"
+        v-else
+        flat
+        no-caps
+        icon="arrow_back"
+        label="К выбору"
+        color="grey-7"
+        @click="cardStore.resetCard()"
         />
         <q-btn
           unelevated
@@ -89,12 +91,13 @@
           color="primary"
           :loading="saving"
           @click="saveCard"
-        />
-      </div>
-      <CardConstructor />
-    </template>
-  </q-page>
-</template>
+          />
+        </div>
+        <CardConstructor />
+      </template>
+    </div>
+    </q-page>
+  </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
@@ -144,7 +147,7 @@ async function saveCard() {
 
   // минимальная проверка — номер карты обязателен
   if (!draft.cardNo.trim()) {
-    $q.notify({ type: 'warning', message: 'Укажите номер карты' });
+    $q.notify({ type: 'negative', message: 'Укажите номер карты' });
     return;
   }
 

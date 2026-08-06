@@ -1,30 +1,32 @@
 <template>
   <q-page class="dashboard q-pa-lg">
-    <div class="greeting">Здравствуйте, {{ auth.user?.name }}!</div>
+    <div class="page-content">
+      <div class="greeting">Здравствуйте, {{ auth.user?.name }}!</div>
 
-    <div class="cards-grid">
-      <q-card
-        v-for="section in visibleSections"
-        :key="section.key"
-        class="section-card"
-        :class="{ 'section-card--wip': section.wip }"
-        @click="openSection(section)"
-      >
-        <q-badge
-          v-if="section.wip"
-          class="wip-badge"
-          color="orange-4"
-          text-color="orange-10"
-          label="в разработке"
-        />
+      <div class="cards-grid">
+        <q-card
+          v-for="section in visibleSections"
+          :key="section.key"
+          class="section-card"
+          :class="{ 'section-card--wip': section.wip }"
+          @click="openSection(section)"
+        >
+          <q-badge
+            v-if="section.wip"
+            class="wip-badge"
+            color="orange-4"
+            text-color="orange-10"
+            label="в разработке"
+          />
 
-        <div class="icon-tile">
-          <q-icon :name="section.icon" size="26px" />
-        </div>
+          <div class="icon-tile">
+            <q-icon :name="section.icon" size="26px" />
+          </div>
 
-        <div class="section-title">{{ section.title }}</div>
-        <div class="section-subtitle">{{ section.subtitle }}</div>
-      </q-card>
+          <div class="section-title">{{ section.title }}</div>
+          <div class="section-subtitle">{{ section.subtitle }}</div>
+        </q-card>
+      </div>
     </div>
   </q-page>
 </template>
@@ -133,7 +135,6 @@ function openSection(section: DashboardSection): void {
 
 <style scoped>
 .dashboard {
-  background: var(--app-bg);
   min-height: 100%;
 }
 
@@ -147,7 +148,7 @@ function openSection(section: DashboardSection): void {
 /* сетка сама раскладывает карточки по ширине, без возни с брейкпоинтами */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
 }
 

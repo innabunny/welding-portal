@@ -1,14 +1,16 @@
 <template>
   <q-page class="q-pa-lg">
+    <div class="page-content">
 
-    <!-- ================= МАСТЕР: подача заявок ================= -->
-    <template v-if="isMaster">
-      <div class="row items-center q-mb-md">
-        <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
-          Заявка на обслуживание оборудования
-        </div>
-        <q-space />
-        <q-btn
+
+      <!-- ================= МАСТЕР: подача заявок ================= -->
+      <template v-if="isMaster">
+        <div class="row items-center q-mb-md">
+          <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
+            Заявка на обслуживание оборудования
+          </div>
+          <q-space />
+          <q-btn
           v-if="canCreate"
           unelevated
           no-caps
@@ -16,7 +18,7 @@
           label="Новая заявка"
           color="primary"
           @click="dialogOpen = true"
-        />
+          />
       </div>
       <!-- заглушка, если мастеру не назначен цех -->
       <q-banner v-if="auth.user?.workshopId == null" rounded class="q-mb-md warn-banner">
@@ -33,26 +35,26 @@
         Мои заявки
       </div>
       <q-table
-        :rows="myRequests"
-        :columns="masterColumns"
-        row-key="id"
-        :loading="store.loading"
-        flat
-        bordered
-        :rows-per-page-options="[10, 0]"
+      :rows="myRequests"
+      :columns="masterColumns"
+      row-key="id"
+      :loading="store.loading"
+      flat
+      bordered
+      :rows-per-page-options="[10, 0]"
       >
-        <template #body-cell-priority="props">
-          <q-td :props="props"
-            ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
-              props.row.priority
-            }}</q-badge></q-td
+      <template #body-cell-priority="props">
+        <q-td :props="props"
+        ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
+          props.row.priority
+        }}</q-badge></q-td
           >
         </template>
         <template #body-cell-status="props">
           <q-td :props="props"
-            ><q-badge :style="chip(STATUS_META, props.row.status)">{{
-              props.row.status
-            }}</q-badge></q-td
+          ><q-badge :style="chip(STATUS_META, props.row.status)">{{
+            props.row.status
+          }}</q-badge></q-td
           >
         </template>
         <template #no-data>
@@ -60,7 +62,7 @@
         </template>
       </q-table>
 
-        <MaintenanceFormDialog v-model="dialogOpen" :equipment-options="equipmentOptions" @save="handleCreate" />
+      <MaintenanceFormDialog v-model="dialogOpen" :equipment-options="equipmentOptions" @save="handleCreate" />
     </template>
 
     <!-- ============= МЕХАНИК / АДМИН: обработка ============= -->
@@ -75,10 +77,10 @@
           color="orange-8"
           text-color="white"
           :label="`открытых: ${store.openCount}`"
-        />
-      </div>
+          />
+        </div>
 
-      <q-table
+        <q-table
         :rows="store.items"
         :columns="manageColumns"
         row-key="id"
@@ -88,24 +90,24 @@
         :rows-per-page-options="[10, 20, 0]"
         table-header-style="table-layout: fixed"
         class="fixed-table"
-      >
+        >
         <template #body-cell-priority="props">
           <q-td :props="props"
-            ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
-              props.row.priority
-            }}</q-badge></q-td
+          ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
+            props.row.priority
+          }}</q-badge></q-td
           >
         </template>
 
         <template #body-cell-status="props">
           <q-td :props="props">
             <q-select
-              :model-value="props.row.status"
-              :options="STATUSES"
-              dense
-              borderless
-              emit-value
-              @update:model-value="(val) => changeStatus(props.row, val)"
+            :model-value="props.row.status"
+            :options="STATUSES"
+            dense
+            borderless
+            emit-value
+            @update:model-value="(val) => changeStatus(props.row, val)"
             />
           </q-td>
         </template>
@@ -127,23 +129,24 @@
         <template #body-cell-actions="props">
           <q-td :props="props" class="text-right">
             <q-btn
-              flat
-              dense
-              round
-              size="sm"
-              icon="delete"
-              color="grey-6"
-              @click="removeRequest(props.row)"
+            flat
+            dense
+            round
+            size="sm"
+            icon="delete"
+            color="grey-6"
+            @click="removeRequest(props.row)"
             >
-              <q-tooltip>Удалить</q-tooltip>
-            </q-btn>
-          </q-td>
-        </template>
-      </q-table>
+            <q-tooltip>Удалить</q-tooltip>
+          </q-btn>
+        </q-td>
+      </template>
+    </q-table>
 
 
-    </template>
-  </q-page>
+  </template>
+</div>
+</q-page>
 </template>
 
 <script setup lang="ts">

@@ -1,12 +1,14 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center q-mb-md">
-      <div class="text-h6 text-weight-medium page-title">Оборудование предприятия</div>
-      <q-space />
-      <q-btn unelevated no-caps icon="add" label="Добавить" color="primary" @click="openCreate" />
-    </div>
+    <div class="page-content">
 
-    <q-table
+      <div class="row items-center q-mb-md">
+        <div class="text-h6 text-weight-medium page-title">Оборудование предприятия</div>
+        <q-space />
+        <q-btn unelevated no-caps icon="add" label="Добавить" color="primary" @click="openCreate" />
+      </div>
+
+      <q-table
       :rows="store.items"
       :columns="columns"
       row-key="id"
@@ -15,21 +17,21 @@
       flat
       bordered
       :rows-per-page-options="[10, 20, 50, 0]"
-    >
+      >
       <template #top-left>
         <q-input
-          v-model="search"
-          dense
-          outlined
-          debounce="300"
-          placeholder="Поиск"
-          style="min-width: 260px"
+        v-model="search"
+        dense
+        outlined
+        debounce="300"
+        placeholder="Поиск"
+        style="min-width: 260px"
         >
-          <template #prepend><q-icon name="search" /></template>
-        </q-input>
-      </template>
+        <template #prepend><q-icon name="search" /></template>
+      </q-input>
+    </template>
 
-      <!-- способ показываем именем, а не id -->
+    <!-- способ показываем именем, а не id -->
       <template #body-cell-method="props">
         <q-td :props="props">{{ store.methodName(props.value) }}</q-td>
       </template>
@@ -41,17 +43,17 @@
       <template #body-cell-actions="props">
         <q-td :props="props" class="text-right">
           <q-btn
-            flat
-            dense
-            round
-            icon="edit"
-            size="sm"
-            color="green-7"
-            hover
-            @click="openEdit(props.row)"
+          flat
+          dense
+          round
+          icon="edit"
+          size="sm"
+          color="green-7"
+          hover
+          @click="openEdit(props.row)"
           />
           <q-btn
-            flat
+          flat
             dense
             round
             icon="delete"
@@ -59,18 +61,19 @@
             color="red-5"
             hover
             @click="confirmRemove(props.row)"
-          />
-        </q-td>
-      </template>
+            />
+          </q-td>
+        </template>
 
-      <template #no-data>
-        <div class="full-width text-center text-grey-6 q-pa-md">Оборудование не найдено</div>
-      </template>
-    </q-table>
+        <template #no-data>
+          <div class="full-width text-center text-grey-6 q-pa-md">Оборудование не найдено</div>
+        </template>
+      </q-table>
 
-    <EquipmentFormDialog v-model="dialogOpen" :item="editing" @save="handleSave" />
-  </q-page>
-</template>
+      <EquipmentFormDialog v-model="dialogOpen" :item="editing" @save="handleSave" />
+    </div>
+    </q-page>
+  </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';

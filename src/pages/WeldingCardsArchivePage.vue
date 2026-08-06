@@ -1,78 +1,80 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center q-mb-md">
-      <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
-        Архив технологических карт
-      </div>
-      <q-space />
-      <q-btn unelevated no-caps icon="add" label="Новая карта" color="primary" @click="goNew" />
-    </div>
-
-    <q-table
-      :rows="archive.items"
-      :columns="columns"
-      row-key="id"
-      :loading="archive.loading"
-      :filter="search"
-      flat
-      bordered
-      :rows-per-page-options="[10, 20, 50, 0]"
-    >
-      <template #top-left>
-        <q-input
-          v-model="search"
-          dense
-          outlined
-          debounce="300"
-          placeholder="Поиск по №, детали, оборудованию"
-          style="min-width: 300px"
-        >
-          <template #prepend><q-icon name="search" /></template>
-        </q-input>
-      </template>
-
-      <!-- способ показываем именем -->
-      <template #body-cell-method="props">
-        <q-td :props="props">{{ methodName(props.row.method) }}</q-td>
-      </template>
-
-      <template #body-cell-savedAt="props">
-        <q-td :props="props">{{ new Date(props.row.savedAt).toLocaleDateString('ru-RU') }}</q-td>
-      </template>
-
-      <template #body-cell-actions="props">
-        <q-td :props="props" class="text-right">
-          <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            icon="visibility"
-            color="grey-7"
-            @click="openCard(props.row)"
-          >
-            <q-tooltip>Открыть</q-tooltip>
-          </q-btn>
-          <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            icon="delete"
-            color="grey-6"
-            @click="removeCard(props.row)"
-          >
-            <q-tooltip>Удалить</q-tooltip>
-          </q-btn>
-        </q-td>
-      </template>
-
-      <template #no-data>
-        <div class="full-width text-center text-grey-6 q-pa-md">
-          Сохранённых карт нет. Создайте первую в «Разработке техкарты».
+    <div class="page-content">
+      <div class="row items-center q-mb-md">
+        <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
+          Архив технологических карт
         </div>
-      </template>
-    </q-table>
+        <q-space />
+        <q-btn unelevated no-caps icon="add" label="Новая карта" color="primary" @click="goNew" />
+      </div>
+
+      <q-table
+        :rows="archive.items"
+        :columns="columns"
+        row-key="id"
+        :loading="archive.loading"
+        :filter="search"
+        flat
+        bordered
+        :rows-per-page-options="[10, 20, 50, 0]"
+      >
+        <template #top-left>
+          <q-input
+            v-model="search"
+            dense
+            outlined
+            debounce="300"
+            placeholder="Поиск по №, детали, оборудованию"
+            style="min-width: 300px"
+          >
+            <template #prepend><q-icon name="search" /></template>
+          </q-input>
+        </template>
+
+        <!-- способ показываем именем -->
+        <template #body-cell-method="props">
+          <q-td :props="props">{{ methodName(props.row.method) }}</q-td>
+        </template>
+
+        <template #body-cell-savedAt="props">
+          <q-td :props="props">{{ new Date(props.row.savedAt).toLocaleDateString('ru-RU') }}</q-td>
+        </template>
+
+        <template #body-cell-actions="props">
+          <q-td :props="props" class="text-right">
+            <q-btn
+              flat
+              dense
+              round
+              size="sm"
+              icon="visibility"
+              color="grey-7"
+              @click="openCard(props.row)"
+            >
+              <q-tooltip>Открыть</q-tooltip>
+            </q-btn>
+            <q-btn
+              flat
+              dense
+              round
+              size="sm"
+              icon="delete"
+              color="grey-6"
+              @click="removeCard(props.row)"
+            >
+              <q-tooltip>Удалить</q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
+
+        <template #no-data>
+          <div class="full-width text-center text-grey-6 q-pa-md">
+            Сохранённых карт нет. Создайте первую в «Разработке техкарты».
+          </div>
+        </template>
+      </q-table>
+    </div>
   </q-page>
 </template>
 

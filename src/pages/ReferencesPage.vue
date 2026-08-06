@@ -1,22 +1,24 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="text-h6 text-weight-medium q-mb-md" style="color:var(--app-ink)">
-      Справочники и способы сварки
-    </div>
+    <div class="page-content">
 
-    <div v-if="store.data" class="row q-col-gutter-md">
-      <!-- МАСТЕР: категории -->
-      <div class="col-12 col-sm-4 col-md-3">
-        <q-card flat bordered>
-          <q-list separator>
-            <q-item
+      <div class="text-h6 text-weight-medium q-mb-md" style="color:var(--app-ink)">
+        Справочники и способы сварки
+      </div>
+
+      <div v-if="store.data" class="row q-col-gutter-md">
+        <!-- МАСТЕР: категории -->
+        <div class="col-12 col-sm-4 col-md-3">
+          <q-card flat bordered>
+            <q-list separator>
+              <q-item
               v-for="cat in categories"
               :key="cat"
               clickable
               :active="cat === selected"
               active-class="cat-active"
               @click="selected = cat"
-            >
+              >
               <q-item-section>{{ titles[cat] }}</q-item-section>
               <q-item-section side>
                 <q-badge color="grey-4" text-color="grey-8" :label="store.data[cat].length" />
@@ -38,14 +40,14 @@
           <!-- добавление -->
           <q-card-section class="row q-gutter-sm items-center">
             <q-input
-              v-model="newValue"
-              dense outlined
-              placeholder="Новая марка / значение"
-              class="col"
-              @keyup.enter="add"
+            v-model="newValue"
+            dense outlined
+            placeholder="Новая марка / значение"
+            class="col"
+            @keyup.enter="add"
             />
             <q-btn unelevated no-caps icon="add" label="Добавить"
-              color="primary" :disable="!newValue.trim()" @click="add" />
+            color="primary" :disable="!newValue.trim()" @click="add" />
           </q-card-section>
 
           <q-separator />
@@ -65,6 +67,7 @@
         </q-card>
       </div>
     </div>
+  </div>
   </q-page>
 </template>
 

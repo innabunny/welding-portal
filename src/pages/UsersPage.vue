@@ -1,19 +1,21 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center q-mb-md">
-      <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">Пользователи</div>
-      <q-space />
-      <q-btn
+    <div class="page-content">
+
+      <div class="row items-center q-mb-md">
+        <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">Пользователи</div>
+        <q-space />
+        <q-btn
         unelevated
         no-caps
         icon="add"
         label="Добавить"
         color="primary"
         @click="dialogOpen = true"
-      />
-    </div>
+        />
+      </div>
 
-    <q-table
+      <q-table
       :rows="store.items"
       :columns="columns"
       row-key="id"
@@ -23,19 +25,19 @@
       :rows-per-page-options="[10, 20, 0]"
       table-header-style="table-layout: fixed"
       class="fixed-table"
-    >
+      >
       <!-- инлайн-смена роли -->
       <template #body-cell-role="props">
         <q-td :props="props">
           <q-select
-            :model-value="props.row.role"
-            :options="roleOptions"
-            emit-value
-            map-options
-            dense
-            borderless
-            :disable="isSelf(props.row)"
-            @update:model-value="(val) => onRoleChange(props.row, val)"
+          :model-value="props.row.role"
+          :options="roleOptions"
+          emit-value
+          map-options
+          dense
+          borderless
+          :disable="isSelf(props.row)"
+          @update:model-value="(val) => onRoleChange(props.row, val)"
           />
         </q-td>
       </template>
@@ -44,14 +46,14 @@
       <template #body-cell-workshop="props">
         <q-td :props="props">
           <q-select
-            :model-value="props.row.workshopId"
-            :options="workshopOptions"
-            emit-value
-            map-options
-            dense
-            borderless
-            clearable
-            @update:model-value="(val) => onWorkshopChange(props.row, val)"
+          :model-value="props.row.workshopId"
+          :options="workshopOptions"
+          emit-value
+          map-options
+          dense
+          borderless
+          clearable
+          @update:model-value="(val) => onWorkshopChange(props.row, val)"
           />
         </q-td>
       </template>
@@ -59,9 +61,9 @@
       <template #body-cell-active="props">
         <q-td :props="props">
           <q-badge
-            :color="props.row.active ? 'green-2' : 'red-2'"
-            :text-color="props.row.active ? 'green-9' : 'red-9'"
-            :label="props.row.active ? 'Активен' : 'Заблокирован'"
+          :color="props.row.active ? 'green-2' : 'red-2'"
+          :text-color="props.row.active ? 'green-9' : 'red-9'"
+          :label="props.row.active ? 'Активен' : 'Заблокирован'"
           />
         </q-td>
       </template>
@@ -69,46 +71,47 @@
       <template #body-cell-actions="props">
         <q-td :props="props" class="text-right">
           <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            color="grey-7"
-            icon="key"
-            @click="openResetPassword(props.row)"
+          flat
+          dense
+          round
+          size="sm"
+          color="grey-7"
+          icon="key"
+          @click="openResetPassword(props.row)"
           >
-            <q-tooltip>Сбросить пароль</q-tooltip>
-          </q-btn>
-          <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            :color="props.row.active ? 'orange-8' : 'green-8'"
-            :icon="props.row.active ? 'block' : 'check_circle'"
-            :disable="isSelf(props.row)"
-            @click="store.toggleActive(props.row.id)"
-          >
-            <q-tooltip>{{ props.row.active ? 'Заблокировать' : 'Разблокировать' }}</q-tooltip>
-          </q-btn>
-          <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            color="grey-7"
-            icon="delete"
-            :disable="isSelf(props.row)"
-            @click="onRemove(props.row)"
-          >
-            <q-tooltip>Удалить</q-tooltip>
-          </q-btn>
-        </q-td>
-      </template>
-    </q-table>
+          <q-tooltip>Сбросить пароль</q-tooltip>
+        </q-btn>
+        <q-btn
+        flat
+        dense
+        round
+        size="sm"
+        :color="props.row.active ? 'orange-8' : 'green-8'"
+        :icon="props.row.active ? 'block' : 'check_circle'"
+        :disable="isSelf(props.row)"
+        @click="store.toggleActive(props.row.id)"
+        >
+        <q-tooltip>{{ props.row.active ? 'Заблокировать' : 'Разблокировать' }}</q-tooltip>
+      </q-btn>
+      <q-btn
+      flat
+      dense
+      round
+      size="sm"
+      color="grey-7"
+      icon="delete"
+      :disable="isSelf(props.row)"
+      @click="onRemove(props.row)"
+      >
+      <q-tooltip>Удалить</q-tooltip>
+    </q-btn>
+  </q-td>
+</template>
+</q-table>
 
-    <UserFormDialog v-model="dialogOpen" @save="handleCreate" />
-  </q-page>
+<UserFormDialog v-model="dialogOpen" @save="handleCreate" />
+</div>
+</q-page>
 </template>
 
 <script setup lang="ts">
