@@ -4,6 +4,7 @@ export const mockWeldingCards: WeldingCard[] = [
 
   {
     id: 1,
+    detailNo: '105555',
     method: 'rad',
     tplKey: 'tig',
     equipment: 'УДГУ-351',
@@ -17,5 +18,6 @@ export const mockWeldingCards: WeldingCard[] = [
     passes: [],
     savedAt: new Date().toISOString().slice(0, 10),
     authorName: 'Петров П.П.',
+    eskiz: null
   },
 ];

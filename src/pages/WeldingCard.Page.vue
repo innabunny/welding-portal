@@ -93,7 +93,7 @@
           @click="saveCard"
           />
         </div>
-        <CardConstructor />
+        <CardSheet/>
       </template>
     </div>
     </q-page>
@@ -107,7 +107,7 @@ import { useWeldingCardStore } from '@/stores/weldingCard';
 import { useEquipmentStore } from '@/stores/equipment';
 import { useAuthStore } from '@/stores/auth';
 import { useWeldingCardsArchiveStore } from '@/stores/weldingCardsArchive';
-import CardConstructor from '@/components/weldingCard/CardConstructor.vue';
+import CardSheet from '@/components/weldingCard/CardSheet.vue';
 
 const cardStore = useWeldingCardStore();
 const equipmentStore = useEquipmentStore();

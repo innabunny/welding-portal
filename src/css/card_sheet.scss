@@ -1,0 +1,231 @@
+.card-sheet {
+  /* border: 1px solid #333; */
+  background: #fff;
+  font-size: 12px;
+  color: #1a1a1a;
+}
+
+/* базовая таблица бланка */
+.sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.cell {
+  border: 1px solid #333;
+  padding: 2px;
+  vertical-align: top;
+}
+
+
+
+/* Оборудование */
+.cell-label .lab {
+  font-size: 12px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.val-static {
+  font-weight: 600;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* центральная ячейка-заголовок */
+.cell-title {
+  text-align: center;
+  vertical-align: middle;
+}
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* Операция / Шов / Job */
+.job-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+.job-lab {
+  font-size: 10px;
+  color: #555;
+  min-width: 56px;
+}
+
+/* инпуты бланка — подчёркнутые, «бумажные» */
+.inp {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-bottom: 1px solid #bbb;
+  padding: 2px 4px;
+  font: inherit;
+  color: #1a1a1a;
+  background: transparent;
+  outline: none;
+}
+.inp:focus {
+  border-bottom-color: var(--q-primary);
+  background: #f4faf8;
+}
+.inp-narrow {
+  flex: none;
+  width: 48px;
+  text-align: center;
+}
+.inp-detail {
+  flex: none;
+  width: 120px;
+}
+
+/* ===== ЗОНА 2 ===== */
+.col-left,
+.col-right,
+.col-eskiz {
+  vertical-align: top;
+  padding: 0;
+}
+
+/* левый столбец: поля друг под другом */
+.fld {
+  border-bottom: 1px solid #333;
+  padding: 4px 8px;
+}
+.fld:last-child {
+  border-bottom: none;
+}
+.mat-row {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 4px;
+  margin-top: 3px;
+}
+.mat-pos {
+  flex: none;
+  text-align: center;
+}
+
+/* эскиз */
+.col-eskiz {
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+}
+.eskiz-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 200px;
+  text-align: center;
+  padding: 12px;
+}
+
+/* правый столбец: блоки с заголовками */
+.blk-head {
+  background: #e8eef0;
+  font-weight: 600;
+  font-size: 11px;
+  text-align: center;
+  padding: 4px 6px;
+  border-bottom: 1px solid #333;
+  border-top: 1px solid #333;
+}
+.blk-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.blk-cell {
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+  padding: 3px 6px;
+  vertical-align: top;
+}
+.blk-cell:last-child {
+  border-right: none;
+}
+
+/* ===== ЗОНА 3: ТАБЛИЦА ПРОХОДОВ ===== */
+.passes-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11px;
+}
+.passes-table th,
+.passes-table td {
+  border: 1px solid #333;
+  padding: 2px 3px;
+}
+.passes-table th {
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.15;
+  background: #fff;
+}
+.passes-table .pc {
+  padding: 0;
+  vertical-align: middle;
+}
+.passes-table .pc-no {
+  width: 5%;
+  position: relative;
+}
+.passes-table .inp {
+  width: 100%;
+  border: none; /* убираем подчёркивание глобального .inp внутри проходов */
+  background: transparent;
+  font: inherit;
+  text-align: center;
+  padding: 3px 2px;
+  outline: none;
+}
+.passes-table .pc-two .inp {
+  display: block;
+}
+.passes-table .pc-two .inp + .inp {
+  border-top: 1px dashed #bbb;
+} /* об/мин | м/ч */
+
+.row-del {
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 1px solid #c33;
+  border-radius: 50%;
+  background: #fff;
+  color: #c33;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.passes-controls {
+  margin-top: 6px;
+}
+.add-pass {
+  border: 1px solid var(--app-border, #ccc);
+  background: var(--app-bg, #fff);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

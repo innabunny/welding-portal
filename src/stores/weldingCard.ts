@@ -4,7 +4,11 @@ import type { WeldingMethod, WeldingTemplate } from '@/shared/types/weldingTempl
 import type { WeldingCardDraft } from '@/shared/types/weldingCard';
 import type { Equipment } from '@/shared/types/equipment';
 import { templateApi } from '@/shared/services/templateApi';
-import type { WeldingCard } from '@/shared/types/weldingCard';
+import type { WeldingCard, WeldPass } from '@/shared/types/weldingCard';
+
+function makePass(): WeldPass {
+  return {};
+}
 
 export const useWeldingCardStore = defineStore('weldingCard', () => {
   const methods = ref<WeldingMethod[]>([]);
@@ -34,7 +38,7 @@ export const useWeldingCardStore = defineStore('weldingCard', () => {
 
   function addPass() {
     if (!draft.value) return;
-    draft.value.passes.push({ no: String(draft.value.passes.length + 1) });
+    draft.value.passes.push(makePass());
   }
 
   function removePass(index: number) {
@@ -68,6 +72,7 @@ export const useWeldingCardStore = defineStore('weldingCard', () => {
       method: selectedMethod.value.id,
       tplKey: selectedMethod.value.tpl,
       equipment: selectedEquipment.value.name,
+      detailNo: '',
       cardNo: '',
       oper: '',
       seam: '',
@@ -75,7 +80,8 @@ export const useWeldingCardStore = defineStore('weldingCard', () => {
       detail: '',
       thickness: '',
       values,
-      passes: [{}, {}], // две пустые строки проходов — наполним на этапе C
+      passes: [makePass(), makePass()],
+      eskiz: null,
     };
   }
 
