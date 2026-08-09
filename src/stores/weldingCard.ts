@@ -5,10 +5,13 @@ import type { WeldingCardDraft } from '@/shared/types/weldingCard';
 import type { Equipment } from '@/shared/types/equipment';
 import { templateApi } from '@/shared/services/templateApi';
 import type { WeldingCard, WeldPass } from '@/shared/types/weldingCard';
+import { eskizSVG, type GrooveParams } from '@/shared/services/eskizGen';
 
 function makePass(): WeldPass {
   return {};
 }
+
+export interface WeldEskiz { params: GrooveParams; svg: string }
 
 export const useWeldingCardStore = defineStore('weldingCard', () => {
   const methods = ref<WeldingMethod[]>([]);
@@ -45,6 +48,12 @@ export const useWeldingCardStore = defineStore('weldingCard', () => {
     if (!draft.value) return;
     draft.value.passes.splice(index, 1);
   }
+
+
+function setEskiz(params: GrooveParams) {
+  if (!draft.value) return;
+  draft.value.eskiz = { params, svg: eskizSVG(params) };
+}
 
   const canStart = () => !!selectedMethod.value && !!selectedEquipment.value;
 
@@ -119,5 +128,7 @@ export const useWeldingCardStore = defineStore('weldingCard', () => {
     removePass,
     openCard,
     isFromArchive,
+    setEskiz,
+
   };
 });

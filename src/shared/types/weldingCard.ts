@@ -1,9 +1,11 @@
+import type { GrooveParams } from "../services/eskizGen";
+
 export interface CardPass {
   no?: string; // № прохода
   [col: string]: string | undefined; // значения колонок (c0, c1...)
 }
 
-export interface WeldEskiz { svg: string; params?: Record<string, unknown> }
+export interface WeldEskiz { svg: string; params: GrooveParams }
 
 export interface WeldingCardDraft {
   id?: number | null,

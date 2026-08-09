@@ -59,8 +59,18 @@
 
       <!-- ЭСКИЗ -->
       <div class="col col-esk">
-        <div v-if="draft.eskiz" class="esk-svg" v-html="draft.eskiz.svg"></div>
-        <div v-else class="esk-empty lab">Эскиз не добавлен</div>
+        <div
+          v-if="draft?.eskiz"
+          class="esk-svg"
+          v-html="draft.eskiz.svg"
+          @click="eskizOpen = true"
+        />
+        <div v-else class="esk-empty">
+          <div class="lab">Эскиз не добавлен</div>
+          <q-btn size="sm" color="primary" label="+ Добавить эскиз" @click="eskizOpen = true" />
+        </div>
+
+        <EskizEditor v-model="eskizOpen" />
       </div>
 
       <!-- ПРАВЫЙ БЛОК под Операцией: Шов/Job + режимы из tpl.right -->
@@ -134,9 +144,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useWeldingCardStore } from '@/stores/weldingCard';
 import { TPL, DICT_MAP } from '@/shared/services/weldingTemplates';
+import EskizEditor from './EskizEditor.vue';
 
 const store = useWeldingCardStore();
 const draft = computed(() => store.draft);
@@ -146,6 +157,7 @@ const tpl = computed(() => {
   if (!t) throw new Error('CardSheet: нет шаблона для ' + key);
   return t;
 });
+const eskizOpen = ref(false);
 
 const dl = (k: string) => (DICT_MAP[k] ? `dl_${DICT_MAP[k]}` : undefined);
 const hasSub = computed(() => tpl.value.pass.some((gr) => gr.c.some((c) => typeof c === 'object')));
@@ -359,5 +371,20 @@ const leafTotal = computed(() => tpl.value.pass.reduce((n, gr) => n + leafCount(
   .no-print {
     display: none !important;
   }
+}
+
+.esk-svg {
+  width: 100%;
+  cursor: pointer;
+}
+.esk-svg :deep(svg) {
+  width: 100%;
+  height: auto;
+}
+.esk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 </style>
