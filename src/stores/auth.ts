@@ -1,48 +1,32 @@
-// stores/auth.ts
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { usersApi } from '@/shared/services/usersApi';
 import type { User } from '@/shared/types/user';
-
-interface Credentials {
-  login: string;
-  password: string;
-}
-
-type SafeUser = Omit<User, 'password'>;
+import { usersApi } from '@/shared/services/usersApi';
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<SafeUser | null>(JSON.parse(localStorage.getItem('user') || 'null'));
-  const loading = ref<boolean>(false);
-  const isAuthenticated = computed<boolean>(() => !!user.value);
+  const user = ref<User | null>(null);
+  const isLoggedIn = computed(() => user.value !== null);
 
-  async function login(credentials: Credentials): Promise<void> {
-    loading.value = true;
+  async function login(loginName: string, password: string): Promise<boolean> {
+    const result = await usersApi.authenticate(loginName, password);
+    if (result === null) return false;
 
-    try {
-      const found = await usersApi.authenticate(credentials.login, credentials.password);
-      if (!found) throw new Error('Неверный логин или пароль');
-      if (!found.active) throw new Error('Учётная запись заблокирована');
-      user.value = {
-        id: found.id,
-        login: found.login,
-        name: found.name,
-        role: found.role,
-        active: found.active,
-        workshopId: found.workshopId ?? null,
-      };
-
-      localStorage.setItem('user', JSON.stringify(user.value));
-    } finally {
-      loading.value = false;
-    }
+    user.value = result.user;
+    localStorage.setItem('token', result.token);
+    localStorage.setItem('user', JSON.stringify(result.user));
+    return true;
   }
 
-  function logout(): void {
+  function logout() {
     user.value = null;
-    loading.value = false;
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
 
-  return { user, loading, isAuthenticated, login, logout };
+  function restore() {
+    const saved = localStorage.getItem('user');
+    if (saved) user.value = JSON.parse(saved);
+  }
+
+  return { user, isLoggedIn, login, logout, restore };
 });

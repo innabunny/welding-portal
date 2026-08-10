@@ -1,36 +1,30 @@
 import type { User } from '@/shared/types/user';
-import { mockUsers } from '@/mocks/users';
+import {http} from './http'
 
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
-
-let store: User[] = JSON.parse(JSON.stringify(mockUsers));
+export interface LoginResult {
+  token: string;
+  user: User;
+}
 
 export const usersApi = {
   async list(): Promise<User[]> {
-    await delay();
-    return JSON.parse(JSON.stringify(store));
+    const {data} = await http.get<User[]>('/users/')
+    return data
   },
-  async authenticate(login: string, password: string): Promise<User | null> {
-    await delay();
-    const found = store.find((u) => u.login === login && u.password === password);
-    return found ? { ...found } : null;
-  },
+
   async create(data: Omit<User, 'id'>): Promise<User> {
-    await delay();
-    const item: User = { ...data, id: Date.now() };
-    store.push(item);
-    return { ...item };
+    const res = await http.post<User>('/users/', data);
+    return res.data
   },
   async update(id: number, data: Partial<User>): Promise<User> {
-    await delay();
-    const idx = store.findIndex((u) => u.id === id);
-    if (idx === -1) throw new Error(`Пользователь id=${id} не найден`);
-    const updated: User = {...store[idx]!, ...data};
-    store[idx] = updated;
-    return updated;
+    const res = await http.patch<User>(`/users/${id}/`, data)
+    return res.data
   },
   async remove(id: number): Promise<void> {
-    await delay();
-    store = store.filter((u) => u.id !== id);
+    await http.delete<User>(`/users/${id}/`)
+  },
+   async authenticate(login: string, password: string): Promise<LoginResult | null> {
+    const {data} = await http.post<LoginResult>('/auth/login/', {login, password })
+    return data
   },
 };

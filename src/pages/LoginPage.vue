@@ -80,7 +80,7 @@
           class="full-width q-py-sm q-mt-sm"
           color="primary"
           size="md"
-          :loading="authStore.loading"
+          :loading="authStore.isLoggedIn"
         />
       </q-form>
     </q-card>
@@ -107,7 +107,7 @@ const errorMessage = ref<string>('');
 const handleLogin = async (): Promise<void> => {
   errorMessage.value = '';
   try {
-    await authStore.login(credentials);
+    await authStore.login(credentials.login, credentials.password);
     await router.push('/');
   } catch (e: unknown) {
     const err = e as { message?: string };
