@@ -6,7 +6,7 @@
           <div class="brand-mark q-mr-sm">
             <q-icon name="bolt" size="20px" color="white" />
           </div>
-          <div class="column">
+          <div class="column q-ml-md">
             <div class="brand-title">Сварочный портал</div>
             <div class="brand-sub">Информационная система предприятия</div>
           </div>

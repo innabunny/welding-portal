@@ -6,6 +6,8 @@
   --app-ink: #10302a; // заголовки 
   --app-ink-soft: #4a6b60; // вторичный текст 
   --app-border: #dce8e3; // рамки
+   --app-accent: #0f7a63;        // = $primary из quasar.variables
+  --app-accent-dark: #10302a;   // = $secondary (тёмный изумруд)
 
   // светофор статусов
   --status-valid-bg: #e7f0ea;
