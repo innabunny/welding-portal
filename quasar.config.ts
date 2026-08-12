@@ -5,7 +5,7 @@ import { defineConfig } from '#q-app';
 
 export default defineConfig((ctx) => {
   return {
-    boot: ['i18n'],
+    boot: ['i18n', 'auth'],
     css: ['app.scss'],
 
     extras: [
@@ -88,24 +88,15 @@ export default defineConfig((ctx) => {
         '/api': {
           target: 'http://localhost:8000',
           changeOrigin: true,
-        }
-      }
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
       lang: 'ru', // Quasar language pack
       config: {
-        brand: {
-          primary: '#0f7a63', // изумруд — кнопки, акценты, активные вкладки
-          secondary: '#10302a', // тёмный изумруд — вторичное
-          accent: '#1d9e75', // светлее primary — доп. акцент
-          positive: '#3f6b52', // «действует»
-          warning: '#8a6d2f', // «истекает»
-          negative: '#9c4b45', // «просрочено»
-          info: '#2f5d8a',
-          dark: '#10302a',
-        },
+        brand: {},
       },
 
       // iconSet: 'material-icons', // Quasar icon set

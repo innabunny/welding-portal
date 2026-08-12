@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="page-content">
-
       <div class="row items-center q-mb-md">
         <div class="text-h6 text-weight-medium page-title">Оборудование предприятия</div>
         <q-space />
@@ -9,58 +8,58 @@
       </div>
 
       <q-table
-      :rows="store.items"
-      :columns="columns"
-      row-key="id"
-      :loading="store.loading"
-      :filter="search"
-      flat
-      bordered
-      :rows-per-page-options="[10, 20, 50, 0]"
+        :rows="store.items"
+        :columns="columns"
+        row-key="id"
+        :loading="store.loading"
+        :filter="search"
+        flat
+        bordered
+        :rows-per-page-options="[10, 20, 50, 0]"
       >
-      <template #top-left>
-        <q-input
-        v-model="search"
-        dense
-        outlined
-        debounce="300"
-        placeholder="Поиск"
-        style="min-width: 260px"
-        >
-        <template #prepend><q-icon name="search" /></template>
-      </q-input>
-    </template>
-
-    <!-- способ показываем именем, а не id -->
-      <template #body-cell-method="props">
-        <q-td :props="props">{{ store.methodName(props.value) }}</q-td>
-      </template>
-
-      <template #body-cell-workshop="props">
-        <q-td :props="props">{{ workshopStore.workshopName(props.row.workshopId) }}</q-td>
-      </template>
-
-      <template #body-cell-actions="props">
-        <q-td :props="props" class="text-right">
-          <q-btn
-          flat
-          dense
-          round
-          icon="edit"
-          size="sm"
-          color="green-7"
-          hover
-          @click="openEdit(props.row)"
-          />
-          <q-btn
-          flat
+        <template #top-left>
+          <q-input
+            v-model="search"
             dense
-            round
-            icon="delete"
-            size="sm"
-            color="red-5"
-            hover
-            @click="confirmRemove(props.row)"
+            outlined
+            debounce="300"
+            placeholder="Поиск"
+            style="min-width: 260px"
+          >
+            <template #prepend><q-icon name="search" /></template>
+          </q-input>
+        </template>
+
+        <!-- способ показываем именем, а не id -->
+        <template #body-cell-method="props">
+          <q-td :props="props">{{ store.methodName(props.value) }}</q-td>
+        </template>
+
+        <template #body-cell-workshop="props">
+          <q-td :props="props">{{ workshopStore.workshopName(props.row.workshopId) }}</q-td>
+        </template>
+
+        <template #body-cell-actions="props">
+          <q-td :props="props" class="text-right">
+            <q-btn
+              flat
+              dense
+              round
+              icon="edit"
+              size="sm"
+              color="green-7"
+              hover
+              @click="openEdit(props.row)"
+            />
+            <q-btn
+              flat
+              dense
+              round
+              icon="delete"
+              size="sm"
+              color="red-5"
+              hover
+              @click="confirmRemove(props.row)"
             />
           </q-td>
         </template>
@@ -72,8 +71,8 @@
 
       <EquipmentFormDialog v-model="dialogOpen" :item="editing" @save="handleSave" />
     </div>
-    </q-page>
-  </template>
+  </q-page>
+</template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
@@ -110,9 +109,35 @@ function openEdit(row: Equipment) {
 
 async function handleSave(data: Omit<Equipment, 'id'>) {
   if (editing.value) {
-    await store.edit(editing.value.id, data);
+    try {
+      await store.edit(editing.value.id, data);
+      $q.notify({
+        type: 'warning',
+        message: 'Оборудование обновлено',
+        position: 'bottom',
+      });
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: 'Не удалось обновить',
+        position: 'bottom',
+      });
+    }
   } else {
-    await store.add(data);
+    try {
+      await store.add(data);
+      $q.notify({
+        type: 'positive',
+        message: 'Оборудование добавлено',
+        position: 'bottom',
+      });
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: 'Не удалось добавить, такое оборудование уже есть',
+        position: 'bottom',
+      });
+    }
   }
   dialogOpen.value = false;
 }
@@ -124,7 +149,20 @@ function confirmRemove(row: Equipment) {
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    void store.remove(row.id);
+    try {
+      void store.remove(row.id);
+      $q.notify({
+        type: 'negative',
+        message: 'Оборудование удалено',
+        position: 'bottom',
+      });
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: 'Не удалось удалить',
+        position: 'bottom',
+      });
+    }
   });
 }
 
@@ -133,4 +171,3 @@ onMounted(() => {
   void workshopStore.fetchAll();
 });
 </script>
-

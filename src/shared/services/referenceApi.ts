@@ -1,22 +1,23 @@
-import type { RefCategory, References } from '@/shared/types/reference';
-import { mockReferences } from '@/mocks/references';
-
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
-
-// глубокая копия, чтобы правки не мутировали мок
-const data: References = JSON.parse(JSON.stringify(mockReferences));
+import type { RefCategory, RefItem } from '@/shared/types/references';
+import { api } from './api';
 
 export const referenceApi = {
-  async getAll(): Promise<References> {
-    await delay();
-    return JSON.parse(JSON.stringify(data));
+  async getAll(): Promise<RefItem[]> {
+    const {data} = await api.get<RefItem[]>('/references/');
+    return data;
   },
-  async addValue(cat: RefCategory, value: string): Promise<void> {
-    await delay();
-    if (!data[cat].includes(value)) data[cat].push(value);
+
+  async addValue(category: RefCategory, value: string): Promise<RefItem> {
+      const {data} = await api.post<RefItem>('/references/', {category, value});
+      return data;
   },
-  async removeValue(cat: RefCategory, value: string): Promise<void> {
-    await delay();
-    data[cat] = data[cat].filter((v) => v !== value);
+
+  async updateValue( id: number, value: string): Promise<RefItem> {
+    const {data} = await api.patch<RefItem>(`/references/${id}/`, {value} )
+    return data;
   },
+
+  async removeValue(id: number): Promise<void> {
+    await api.delete(`/references/${id}/`);
+  }
 };

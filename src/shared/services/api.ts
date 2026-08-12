@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-export const http = axios.create({
+export const api = axios.create({
   baseURL: '/api',
 });
 
-http.interceptors.request.use((config) => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Token ${token}`;   // прикладываем пропуск

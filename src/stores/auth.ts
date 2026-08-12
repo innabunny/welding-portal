@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function login(loginName: string, password: string): Promise<boolean> {
     const result = await usersApi.authenticate(loginName, password);
-    if (result === null) return false;
+    if (!result || !result.token || !result.user) return false;
 
     user.value = result.user;
     localStorage.setItem('token', result.token);
@@ -24,8 +24,24 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function restore() {
-    const saved = localStorage.getItem('user');
-    if (saved) user.value = JSON.parse(saved);
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+
+    if (!savedToken || !savedUser) {
+      logout();
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(savedUser);
+      if (!parsed || typeof parsed !== 'object') {
+        logout();
+        return;
+      }
+      user.value = parsed as User;
+    } catch {
+      logout();
+    }
   }
 
   return { user, isLoggedIn, login, logout, restore };

@@ -1,8 +1,11 @@
 // ключи категорий фиксированы — это не произвольные строки
 export type RefCategory = 'materials' | 'wires' | 'gases' | 'electrodes' | 'fluxes';
 
-// справочник целиком: категория → список марок
-export type References = Record<RefCategory, string[]>;
+export interface RefItem {
+  id: number;
+  category: RefCategory;
+  value: string;
+}
 
 // человекочитаемые заголовки категорий
 export const REF_TITLES: Record<RefCategory, string> = {

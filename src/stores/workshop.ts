@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { Workshop } from '@/shared/types/workhop';
-import { workshopApi } from '@/shared/services/workShopApi';
+import { workshopApi } from '@/shared/services/workShopsApi';
 
 export const useWorkshopStore = defineStore('workshop', () => {
   const items = ref<Workshop[]>([]);
