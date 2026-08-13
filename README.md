@@ -11,7 +11,27 @@
 (`npm i -g @quasar/cli`, если ещё не стоит).
 
 ### 1. Клонировать репу
+# welding-front
+
+Фронтенд сварочного портала: Vue 3 + Quasar + Pinia + строгий TypeScript.
+Данные ходят через сервисный слой (фасад → стор → компонент) на бэкенд по `/api/`.
+
+---
+
+## Запуск с нуля на новой машине
+
+Нужен установленный Node.js (проверить: `node --version`) и Quasar CLI
+(`npm i -g @quasar/cli`, если ещё не стоит).
+
+### 1. Клонировать репу
 ```bash
+git clone https://github.com/<логин>/welding-front.git
+cd welding-front
+```
+
+### 2. Установить зависимости
+```bash
+npm install
 git clone https://github.com/<логин>/welding-front.git
 cd welding-front
 ```
@@ -22,7 +42,10 @@ npm install
 ```
 (Ставит всё из `package.json` в локальную `node_modules/` — между машинами она НЕ переносится,
 создаётся заново.)
+(Ставит всё из `package.json` в локальную `node_modules/` — между машинами она НЕ переносится,
+создаётся заново.)
 
+### 3. Запустить дев-сервер
 ### 3. Запустить дев-сервер
 ```bash
 quasar dev

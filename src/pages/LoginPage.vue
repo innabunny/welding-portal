@@ -9,7 +9,7 @@
     <q-card class="login-card" flat>
       <div class="brand q-mb-lg">
         <div class="brand-mark">
-          <q-icon name="bolt" size="26px" color="white" />
+          <q-icon name="bolt" size="26px" color="primary" />
         </div>
         <div class="brand-text">
           <div class="brand-title">Сварочный портал</div>

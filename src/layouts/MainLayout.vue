@@ -7,8 +7,8 @@
             <q-icon name="bolt" size="20px" color="white" />
           </div>
           <div class="column q-ml-md">
-            <div class="brand-title">Сварочный портал</div>
-            <div class="brand-sub">Информационная система предприятия</div>
+            <div class="brand-title">НПО «Цифровые решения»</div>
+            <div class="brand-sub">Сварочное производство</div>
           </div>
         </div>
 
@@ -27,9 +27,18 @@
             text-color="primary"
             class="q-mr-sm text-weight-medium"
           >
+          <q-avatar
+            size="34px"
+            color="white"
+            text-color="primary"
+            class="q-mr-sm text-weight-medium"
+          >
             {{ initials }}
           </q-avatar>
           <div class="column">
+            <span class="text-body2 text-weight-medium" style="line-height: 1.1">{{
+              auth.user?.name
+            }}</span>
             <span class="text-body2 text-weight-medium" style="line-height: 1.1">{{
               auth.user?.name
             }}</span>
@@ -46,10 +55,20 @@
           class="header-btn"
           @click="handleLogout"
         />
+        <q-btn
+          flat
+          dense
+          no-caps
+          icon="logout"
+          label="Выйти"
+          class="header-btn"
+          @click="handleLogout"
+        />
       </q-toolbar>
     </q-header>
 
     <q-page-container>
+      <router-view />
       <router-view />
     </q-page-container>
   </q-layout>
