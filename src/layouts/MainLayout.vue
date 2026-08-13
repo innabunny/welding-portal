@@ -27,18 +27,9 @@
             text-color="primary"
             class="q-mr-sm text-weight-medium"
           >
-          <q-avatar
-            size="34px"
-            color="white"
-            text-color="primary"
-            class="q-mr-sm text-weight-medium"
-          >
             {{ initials }}
           </q-avatar>
           <div class="column">
-            <span class="text-body2 text-weight-medium" style="line-height: 1.1">{{
-              auth.user?.name
-            }}</span>
             <span class="text-body2 text-weight-medium" style="line-height: 1.1">{{
               auth.user?.name
             }}</span>
@@ -46,15 +37,6 @@
           </div>
         </div>
 
-        <q-btn
-          flat
-          dense
-          no-caps
-          icon="logout"
-          label="Выйти"
-          class="header-btn"
-          @click="handleLogout"
-        />
         <q-btn
           flat
           dense
