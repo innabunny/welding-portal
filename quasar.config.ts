@@ -96,7 +96,9 @@ export default defineConfig((ctx) => {
     framework: {
       lang: 'ru', // Quasar language pack
       config: {
-        brand: {},
+        notify: {
+          position: 'bottom',
+        },
       },
 
       // iconSet: 'material-icons', // Quasar icon set

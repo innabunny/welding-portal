@@ -24,13 +24,13 @@ export type AttestationKind = 'primary' | 'periodic'; // первичная / п
 export interface Welder {
   id: number;
   fio: string;
-  workshopId: number | null; // ссылка на справочник цехов
-  method: string; // id способа сварки
-  production: 'основное' | 'вспомогательное';
-  thFrom: number | null; // толщина от, мм
-  thTo: number | null; // толщина до, мм
-  certNo: string; // № удостоверения
-  attDate: string; // дата аттестации (ISO)
-  kind: AttestationKind; // как аттестован в последний раз
-  protocol: AttestationProtocol;
+  birthDate: string | null; // ISO
+  workshopId: number | null;
+  workshopName: string | null; // read-only
+  weldingSince: string | null; // ISO
+  rank: string;
+  personalStamp: string;
+  isActive: boolean;
+  age: number | null; // read-only, считается сервером
+  experienceYears: number | null; // read-only, считается сервером
 }

@@ -21,21 +21,36 @@
 
         <!-- юзер-чип: аватар + имя + роль -->
         <div class="row items-center no-wrap q-mr-md">
-          <q-avatar size="34px" color="white" text-color="primary" class="q-mr-sm text-weight-medium">
+          <q-avatar
+            size="34px"
+            color="white"
+            text-color="primary"
+            class="q-mr-sm text-weight-medium"
+          >
             {{ initials }}
           </q-avatar>
           <div class="column">
-            <span class="text-body2 text-weight-medium" style="line-height:1.1">{{ auth.user?.name }}</span>
+            <span class="text-body2 text-weight-medium" style="line-height: 1.1">{{
+              auth.user?.name
+            }}</span>
             <span class="user-role">{{ roleLabel }}</span>
           </div>
         </div>
 
-        <q-btn flat dense no-caps icon="logout" label="Выйти" class="header-btn" @click="handleLogout" />
+        <q-btn
+          flat
+          dense
+          no-caps
+          icon="logout"
+          label="Выйти"
+          class="header-btn"
+          @click="handleLogout"
+        />
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-        <router-view />
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -60,8 +75,7 @@ async function handleLogout() {
 
 <style scoped>
 .app-header {
-  background: var(--q-primary);
-
+  background: linear-gradient(135deg, var(--app-accent-dark) 0%, var(--app-accent) 100%);
 }
 
 .brand-mark {

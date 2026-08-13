@@ -10,6 +10,7 @@ export const STATUS_META: Record<RequestStatus, { bg: string; fg: string }> = {
   новая: { bg: 'var(--status-none-bg)', fg: 'var(--status-none-fg)' },
   'в работе': { bg: 'var(--status-soon-bg)', fg: 'var(--status-soon-fg)' },
   выполнена: { bg: 'var(--status-valid-bg)', fg: 'var(--status-valid-fg)' },
+  отменена: { bg: '#eceff1', fg: '#78909c' },
 };
 
 export const REASONS = ['ремонт', 'диагностика', 'неисправность'] as const;

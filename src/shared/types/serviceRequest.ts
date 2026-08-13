@@ -1,6 +1,6 @@
 export type RequestReason = 'ремонт' | 'диагностика' | 'неисправность';
 export type RequestPriority = 'низкая' | 'средняя' | 'высокая';
-export type RequestStatus = 'новая' | 'в работе' | 'выполнена';
+export type RequestStatus = 'новая' | 'в работе' | 'выполнена' | 'отменена';
 
 export interface ServiceRequest {
   id: number;

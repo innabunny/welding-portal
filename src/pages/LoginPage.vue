@@ -90,6 +90,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 import { useAuthStore } from '@/stores/auth';
 
 interface Credentials {
@@ -97,6 +98,7 @@ interface Credentials {
   password: string;
 }
 
+const $q = useQuasar();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -108,10 +110,12 @@ const handleLogin = async (): Promise<void> => {
   errorMessage.value = '';
   try {
     await authStore.login(credentials.login, credentials.password);
+    $q.notify({ type: 'positive', message: 'Добро пожаловать!', position: 'bottom' });
     await router.push('/');
   } catch (e: unknown) {
     const err = e as { message?: string };
     errorMessage.value = err?.message || 'Неверный логин или пароль';
+    $q.notify({ type: 'negative', message: errorMessage.value, position: 'bottom' });
   }
 };
 </script>

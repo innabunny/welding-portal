@@ -1,8 +1,6 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="page-content">
-
-
       <!-- ================= МАСТЕР: подача заявок ================= -->
       <template v-if="isMaster">
         <div class="row items-center q-mb-md">
@@ -12,154 +10,142 @@
           <q-space />
           <q-btn
           v-if="canCreate"
-          unelevated
-          no-caps
-          icon="add"
-          label="Новая заявка"
-          color="primary"
-          @click="dialogOpen = true"
+            unelevated
+            no-caps
+            icon="add"
+            label="Новая заявка"
+            color="primary"
+            @click="dialogOpen = true"
           />
-      </div>
-      <!-- заглушка, если мастеру не назначен цех -->
-      <q-banner v-if="auth.user?.workshopId == null" rounded class="q-mb-md warn-banner">
-        <template #avatar><q-icon name="warning_amber" color="orange-8" /></template>
-        Вашей учётной записи не назначен цех. Обратитесь к администратору.
-      </q-banner>
-
-      <q-banner v-else-if="myEquipment.length === 0" rounded class="q-mb-md warn-banner">
-        <template #avatar><q-icon name="info" color="orange-8" /></template>
-        За вашим цехом не числится оборудование. Обратитесь к администратору.
-      </q-banner>
-
-      <div class="text-subtitle1 text-weight-medium q-mb-sm" style="color: var(--app-ink)">
-        Мои заявки
-      </div>
-      <q-table
-      :rows="myRequests"
-      :columns="masterColumns"
-      row-key="id"
-      :loading="store.loading"
-      flat
-      bordered
-      :rows-per-page-options="[10, 0]"
-      >
-      <template #body-cell-priority="props">
-        <q-td :props="props"
-        ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
-          props.row.priority
-        }}</q-badge></q-td
-          >
-        </template>
-        <template #body-cell-status="props">
-          <q-td :props="props"
-          ><q-badge :style="chip(STATUS_META, props.row.status)">{{
-            props.row.status
-          }}</q-badge></q-td
-          >
-        </template>
-        <template #no-data>
-          <div class="full-width text-center text-grey-6 q-pa-md">Вы ещё не подавали заявок.</div>
-        </template>
-      </q-table>
-
-      <MaintenanceFormDialog v-model="dialogOpen" :equipment-options="equipmentOptions" @save="handleCreate" />
-    </template>
-
-    <!-- ============= МЕХАНИК / АДМИН: обработка ============= -->
-    <template v-else>
-      <div class="row items-center q-mb-md">
-        <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
-          Заявки на ремонт оборудования
         </div>
-        <q-space />
-        <q-badge
-          v-if="store.openCount"
-          color="orange-8"
-          text-color="white"
-          :label="`открытых: ${store.openCount}`"
+        <!-- заглушка, если мастеру не назначен цех -->
+        <q-banner v-if="auth.user?.workshopId == null" rounded class="q-mb-md warn-banner">
+          <template #avatar><q-icon name="warning_amber" color="orange-8" /></template>
+          Вашей учётной записи не назначен цех. Обратитесь к администратору.
+        </q-banner>
+
+        <q-banner v-else-if="myEquipment.length === 0" rounded class="q-mb-md warn-banner">
+          <template #avatar><q-icon name="info" color="orange-8" /></template>
+          За вашим цехом не числится оборудование. Обратитесь к администратору.
+        </q-banner>
+
+        <div class="text-subtitle1 text-weight-medium q-mb-sm" style="color: var(--app-ink)">
+          Мои заявки
+        </div>
+        <q-table
+          :rows="myRequests"
+          :columns="masterColumns"
+          row-key="id"
+          :loading="store.loading"
+          flat
+          bordered
+          :rows-per-page-options="[10, 0]"
+        >
+          <template #body-cell-priority="props">
+            <q-td :props="props"
+              ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
+                props.row.priority
+              }}</q-badge></q-td
+            >
+          </template>
+          <template #body-cell-status="props">
+            <q-td :props="props"
+              ><q-badge :style="chip(STATUS_META, props.row.status)">{{
+                props.row.status
+              }}</q-badge></q-td
+            >
+          </template>
+          <template #no-data>
+            <div class="full-width text-center text-grey-6 q-pa-md">Вы ещё не подавали заявок.</div>
+          </template>
+        </q-table>
+
+        <MaintenanceFormDialog
+          v-model="dialogOpen"
+          :equipment-options="equipmentOptions"
+          @save="handleCreate"
+        />
+      </template>
+
+      <!-- ============= МЕХАНИК / АДМИН: обработка ============= -->
+      <template v-else>
+        <div class="row items-center q-mb-md">
+          <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
+            Заявки на ремонт оборудования
+          </div>
+          <q-space />
+          <q-badge
+            v-if="store.openCount"
+            color="deep-orange-6"
+            text-color="white"
+            :label="`открытых: ${store.openCount}`"
           />
         </div>
 
         <q-table
-        :rows="store.items"
-        :columns="manageColumns"
-        row-key="id"
-        :loading="store.loading"
-        flat
-        bordered
-        :rows-per-page-options="[10, 20, 0]"
-        table-header-style="table-layout: fixed"
-        class="fixed-table"
+          :rows="store.items"
+          :columns="manageColumns"
+          row-key="id"
+          :loading="store.loading"
+          flat
+          bordered
+          :rows-per-page-options="[10, 20, 0]"
+          table-header-style="table-layout: fixed"
+          class="fixed-table"
         >
-        <template #body-cell-priority="props">
-          <q-td :props="props"
-          ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
-            props.row.priority
-          }}</q-badge></q-td
-          >
-        </template>
-
-        <template #body-cell-status="props">
-          <q-td :props="props">
-            <q-select
-            :model-value="props.row.status"
-            :options="STATUSES"
-            dense
-            borderless
-            emit-value
-            @update:model-value="(val) => changeStatus(props.row, val)"
-            />
-          </q-td>
-        </template>
-
-        <template #body-cell-closed="props">
-          <q-td :props="props">
-            <span v-if="props.row.status === 'выполнена'">
-              {{ props.row.closedBy || '—' }}<br />
-              <span class="text-grey-6" style="font-size: 11px">
-                {{
-                  props.row.closedAt ? new Date(props.row.closedAt).toLocaleDateString('ru-RU') : ''
-                }}
-              </span>
-            </span>
-            <span v-else class="text-grey-5">—</span>
-          </q-td>
-        </template>
-
-        <template #body-cell-actions="props">
-          <q-td :props="props" class="text-right">
-            <q-btn
-            flat
-            dense
-            round
-            size="sm"
-            icon="delete"
-            color="grey-6"
-            @click="removeRequest(props.row)"
+          <template #body-cell-priority="props">
+            <q-td :props="props"
+              ><q-badge :style="chip(PRIORITY_META, props.row.priority)">{{
+                props.row.priority
+              }}</q-badge></q-td
             >
-            <q-tooltip>Удалить</q-tooltip>
-          </q-btn>
-        </q-td>
+          </template>
+
+          <template #body-cell-status="props">
+            <q-td :props="props">
+              <q-select
+                v-if="['mechanic', 'admin'].includes(auth.user?.role ?? '')"
+                :model-value="props.row.status"
+                :options="STATUSES"
+                dense
+                borderless
+                emit-value
+                @update:model-value="(val) => changeStatus(props.row, val)"
+              />
+              <q-badge v-else :style="chip(STATUS_META, props.row.status)">{{
+                props.row.status
+              }}</q-badge>
+            </q-td>
+          </template>
+
+          <template #body-cell-closed="props">
+            <q-td :props="props">
+              <span v-if="props.row.status === 'выполнена'">
+                {{ props.row.closedBy || '—' }}<br />
+                <span class="text-grey-6" style="font-size: 11px">
+                  {{
+                    props.row.closedAt
+                      ? new Date(props.row.closedAt).toLocaleDateString('ru-RU')
+                      : ''
+                  }}
+                </span>
+              </span>
+              <span v-else class="text-grey-5">—</span>
+            </q-td>
+          </template>
+        </q-table>
       </template>
-    </q-table>
-
-
-  </template>
-</div>
-</q-page>
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted,  ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useQuasar, type QTableColumn } from 'quasar';
 import { useServiceStore } from '@/stores/service';
 import { useAuthStore } from '@/stores/auth';
 import { useEquipmentStore } from '@/stores/equipment';
-import {
-  PRIORITY_META,
-  STATUS_META,
-  STATUSES,
-} from '@/shared/composables/useServiceRequests';
+import { PRIORITY_META, STATUS_META, STATUSES } from '@/shared/composables/useServiceRequests';
 import type {
   ServiceRequest,
   RequestReason,
@@ -224,12 +210,6 @@ function changeStatus(row: ServiceRequest, status: RequestStatus) {
   void store
     .setStatus(row.id, status, auth.user?.name)
     .then(() => $q.notify({ type: 'positive', message: `Статус заявки → ${status}` }));
-}
-
-function removeRequest(row: ServiceRequest) {
-  $q.dialog({ title: 'Удаление', message: 'Удалить заявку?', cancel: true, persistent: true }).onOk(
-    () => void store.remove(row.id),
-  );
 }
 
 const masterColumns: QTableColumn<ServiceRequest>[] = [
@@ -299,7 +279,6 @@ const manageColumns: QTableColumn<ServiceRequest>[] = [
   { name: 'priority', label: 'Срочность', field: 'priority', align: 'left' },
   { name: 'status', label: 'Статус', field: 'status', align: 'left' },
   { name: 'closed', label: 'Кто закрыл', field: 'closedBy', align: 'left' },
-  { name: 'actions', label: '', field: 'id', align: 'right' },
 ];
 
 onMounted(() => {
