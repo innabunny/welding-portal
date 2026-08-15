@@ -37,6 +37,11 @@
           </div>
         </div>
 
+        <div class="wf-label">Образование</div>
+        <q-input v-model="form.education" outlined dense>
+          <template #prepend><q-icon name="school" color="primary" /></template>
+        </q-input>
+
         <div class="wf-label">Цех</div>
         <q-select
           v-model="form.workshopId"
@@ -55,13 +60,14 @@
             <div class="wf-label">Разряд</div>
             <q-input v-model="form.rank" outlined dense />
           </div>
-          <div class="col-12 col-sm-6">
-            <div class="wf-label">Личное клеймо</div>
-            <q-input v-model="form.personalStamp" outlined dense />
-          </div>
         </div>
 
-        <q-toggle v-model="form.isActive" label="Активен" color="primary" class="q-mt-md" />
+        <q-toggle
+          v-model="form.isActive"
+          :label="form.isActive ? 'Работает' : 'Не работает'"
+          color="primary"
+          class="q-mt-md"
+        />
       </q-card-section>
 
       <q-separator />
@@ -85,7 +91,10 @@
 import { computed, reactive, ref, watch } from 'vue';
 import type { Welder } from '@/shared/types/welders';
 
-export type WelderInput = Omit<Welder, 'id' | 'workshopName' | 'age' | 'experienceYears'>;
+export type WelderInput = Omit<
+  Welder,
+  'id' | 'workshopName' | 'age' | 'experienceYears' | 'isAttested'
+>;
 
 const props = defineProps<{
   modelValue: boolean;
@@ -105,8 +114,8 @@ const blank = (): WelderInput => ({
   workshopId: null,
   weldingSince: null,
   rank: '',
-  personalStamp: '',
   isActive: true,
+  education: '',
 });
 const form = reactive<WelderInput>(blank());
 const showErrors = ref(false);
@@ -123,8 +132,9 @@ watch(
         workshopId: props.item.workshopId,
         weldingSince: props.item.weldingSince,
         rank: props.item.rank,
-        personalStamp: props.item.personalStamp,
         isActive: props.item.isActive,
+        isAttested: props.item.isAttested,
+        education: props.item.education,
       });
     }
     showErrors.value = false;

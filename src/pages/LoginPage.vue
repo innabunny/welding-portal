@@ -12,8 +12,8 @@
           <q-icon name="bolt" size="26px" color="primary" />
         </div>
         <div class="brand-text">
-          <div class="brand-title">Сварочный портал</div>
-          <div class="brand-sub">Информационная система предприятия</div>
+          <div class="brand-title">НПО «Цифровые решения»</div>
+          <div class="brand-sub">Сварочное производство</div>
         </div>
       </div>
 

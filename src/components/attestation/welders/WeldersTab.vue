@@ -36,7 +36,7 @@
             v-if="!props.row.isActive"
             color="grey-4"
             text-color="grey-8"
-            label="неактивен"
+            label="не работает"
             class="q-ml-sm"
           />
         </q-td>
@@ -49,22 +49,57 @@
           props.row.experienceYears != null ? props.row.experienceYears + ' лет' : '—'
         }}</q-td>
       </template>
+
+      <template #body-cell-status="props">
+        <q-td :props="props">
+          <q-badge
+            v-if="props.row.isAttested"
+            :style="{
+              background: 'var(--status-valid-bg)',
+              color: 'var(--status-valid-fg)',
+              padding: '4px 8px',
+            }"
+            >аттестован</q-badge
+          >
+          <q-badge
+            v-else
+            :style="{
+              background: 'var(--status-none-bg)',
+              color: 'var(--status-none-fg)',
+              padding: '4px 8px',
+            }"
+            >не аттестован</q-badge
+          >
+        </q-td>
+      </template>
+
       <template #body-cell-actions="props">
-        <q-td :props="props" class="text-right">
+        <q-td :props="props" class="text-right" style="white-space: nowrap">
+          <q-btn
+            v-if="canAttest && !props.row.isAttested"
+            flat
+            no-caps
+            size="md"
+            padding="6px 14px"
+            label="Аттестовать"
+            color="primary"
+            @click="attest(props.row)"
+          />
           <q-btn
             v-if="isAdmin"
             flat
-            dense
-            round
-            size="sm"
+            size="md"
+            padding="6px"
             icon="edit"
             color="grey-7"
+            class="q-ml-xs"
             @click="openEdit(props.row)"
           >
             <q-tooltip>Редактировать</q-tooltip>
           </q-btn>
         </q-td>
       </template>
+
       <template #no-data>
         <div class="full-width text-center text-grey-6 q-pa-md">Сварщиков пока нет.</div>
       </template>
@@ -95,6 +130,12 @@ const store = useWelderDirectoryStore();
 const workshopStore = useWorkshopStore();
 const auth = useAuthStore();
 
+const emit = defineEmits<{ attest: [welder: Welder] }>();
+const canAttest = computed(() => ['master', 'admin'].includes(auth.user?.role ?? ''));
+function attest(w: Welder) {
+  emit('attest', w);
+}
+
 const isAdmin = computed(() => auth.user?.role === 'admin');
 const dialogOpen = ref(false);
 const editing = ref<Welder | null>(null);
@@ -112,15 +153,9 @@ const columns: QTableColumn<Welder>[] = [
     format: (v) => v ?? '—',
   },
   { name: 'rank', label: 'Разряд', field: 'rank', align: 'left', format: (v) => v || '—' },
-  {
-    name: 'personalStamp',
-    label: 'Клеймо',
-    field: 'personalStamp',
-    align: 'left',
-    format: (v) => v || '—',
-  },
   { name: 'age', label: 'Возраст', field: 'age', align: 'left' },
   { name: 'experienceYears', label: 'Стаж', field: 'experienceYears', align: 'left' },
+  { name: 'status', label: 'Статус', field: 'isAttested', align: 'left' },
   { name: 'actions', label: '', field: 'id', align: 'right' },
 ];
 

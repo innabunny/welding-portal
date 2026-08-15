@@ -29,8 +29,9 @@ export interface Welder {
   workshopName: string | null; // read-only
   weldingSince: string | null; // ISO
   rank: string;
-  personalStamp: string;
   isActive: boolean;
   age: number | null; // read-only, считается сервером
   experienceYears: number | null; // read-only, считается сервером
+  isAttested: boolean;
+  education: string;
 }

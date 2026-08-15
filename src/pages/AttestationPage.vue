@@ -21,7 +21,7 @@
 
       <q-tab-panels v-model="tab" animated class="bg-transparent">
         <q-tab-panel name="welders" class="q-pa-none">
-          <WeldersTab />
+          <WeldersTab @attest="startAttestation" />
         </q-tab-panel>
 
         <q-tab-panel name="registry" class="q-pa-none">
@@ -46,11 +46,18 @@ import { useWorkshopStore } from '@/stores/workshop';
 import { useEquipmentStore } from '@/stores/equipment';
 import ProtocolHelp from '@/components/attestation/ProtocolHelp.vue';
 import WeldersTab from '@/components/attestation/welders/WeldersTab.vue';
+import type { Welder } from '@/shared/types/welders';
 
 const workshopStore = useWorkshopStore();
 const equipmentStore = useEquipmentStore();
 
 const tab = ref<'welders' | 'registry' | 'new' | 'help'>('welders');
+
+const attestTarget = ref<Welder | null>(null);
+function startAttestation(w: Welder) {
+  attestTarget.value = w; // передадим в форму «Новой аттестации», когда соберём её
+  tab.value = 'new';
+}
 
 onMounted(() => {
   // void store.fetchAll();
