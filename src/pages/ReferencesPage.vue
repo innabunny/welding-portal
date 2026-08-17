@@ -5,52 +5,52 @@
         Справочники и способы сварки
       </div>
 
-      <div v-if="store.items" class="row q-col-gutter-md">
-        <!-- МАСТЕР: категории -->
+      <div class="row q-col-gutter-md">
+        <!-- категории -->
         <div class="col-12 col-sm-4 col-md-3">
           <q-card flat bordered>
             <q-list separator>
               <q-item
-                v-for="cat in categories"
-                :key="cat"
+                v-for="nav in navItems"
+                :key="nav.key"
                 clickable
-                :active="cat === selected"
+                :active="nav.key === selected"
                 active-class="cat-active"
-                @click="selected = cat"
+                @click="selected = nav.key"
               >
-                <q-item-section>{{ titles[cat] }}</q-item-section>
+                <q-item-section>{{ nav.title }}</q-item-section>
                 <q-item-section side>
-                  <q-badge
-                    color="grey-4"
-                    text-color="grey-8"
-                    :label="store.byCategory[cat].length"
-                  />
+                  <q-badge color="grey-4" text-color="grey-8" :label="nav.count" />
                 </q-item-section>
               </q-item>
             </q-list>
           </q-card>
         </div>
 
-        <!-- ДЕТАЛЬ: значения выбранной категории -->
+        <!-- деталь -->
         <div class="col-12 col-sm-8 col-md-9">
-          <q-card flat bordered>
+          <!-- новые панели -->
+          <MaterialsPanel v-if="selected === 'materials'" />
+          <MaterialGroupsPanel v-else-if="selected === 'material-groups'" />
+
+          <!-- прежний список RefItem для остальных категорий -->
+          <q-card v-else flat bordered>
             <q-card-section class="row items-center q-pb-none">
-              <div class="text-subtitle1 text-weight-medium">{{ titles[selected] }}</div>
+              <div class="text-subtitle1 text-weight-medium">{{ titles[refCategory] }}</div>
               <q-space />
               <q-badge
                 color="grey-4"
                 text-color="grey-8"
-                :label="`${store.byCategory[selected].length} шт.`"
+                :label="`${store.byCategory[refCategory].length} шт.`"
               />
             </q-card-section>
 
-            <!-- добавление -->
             <q-card-section class="row q-gutter-sm items-center">
               <q-input
                 v-model="newValue"
                 dense
                 outlined
-                placeholder="Новая марка / значение"
+                placeholder="Новое значение"
                 class="col"
                 @keyup.enter="add"
               />
@@ -67,9 +67,8 @@
 
             <q-separator />
 
-            <!-- список значений -->
             <q-list separator>
-              <q-item v-for="item in store.byCategory[selected]" :key="item.id">
+              <q-item v-for="item in store.byCategory[refCategory]" :key="item.id">
                 <template v-if="editingId === item.id">
                   <q-item-section>
                     <q-input
@@ -105,7 +104,6 @@
                   </q-item-section>
                 </template>
 
-                <!-- обычный режим -->
                 <template v-else>
                   <q-item-section>{{ item.value }}</q-item-section>
                   <q-item-section side>
@@ -115,7 +113,7 @@
                         dense
                         round
                         icon="edit"
-                        size="sm"
+                        size="md"
                         color="grey-7"
                         @click="startEdit(item)"
                       />
@@ -124,7 +122,7 @@
                         dense
                         round
                         icon="delete"
-                        size="sm"
+                        size="md"
                         color="red-5"
                         @click="remove(item)"
                       />
@@ -132,7 +130,7 @@
                   </q-item-section>
                 </template>
               </q-item>
-              <q-item v-if="store.byCategory[selected].length === 0">
+              <q-item v-if="store.byCategory[refCategory].length === 0">
                 <q-item-section class="text-grey-6">Список пуст</q-item-section>
               </q-item>
             </q-list>
@@ -144,31 +142,46 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useReferenceStore } from '@/stores/references';
+import { useMaterialsStore } from '@/stores/materials';
 import { REF_TITLES, type RefItem, type RefCategory } from '@/shared/types/references';
+import MaterialsPanel from '@/components/references/MaterialsPanel.vue';
+import MaterialGroupsPanel from '@/components/references/MaterialGroupsPanel.vue';
+
+type NavKey = RefCategory | 'material-groups';
 
 const $q = useQuasar();
 const store = useReferenceStore();
+const materials = useMaterialsStore();
 
 const titles = REF_TITLES;
 const categories = Object.keys(REF_TITLES) as RefCategory[];
-const selected = ref<RefCategory>('materials');
+const selected = ref<NavKey>('materials');
 const newValue = ref('');
-const editingId = ref<number | null>(null); // id строки в режиме правки, null = никто
+const editingId = ref<number | null>(null);
 const editValue = ref('');
+
+const refCategory = computed(() => selected.value as RefCategory);
+
+const navItems = computed<{ key: NavKey; title: string; count: number }[]>(() => [
+  ...categories.map((key) => ({
+    key,
+    title: titles[key],
+    count: key === 'materials' ? materials.items.length : store.byCategory[key].length,
+  })),
+  { key: 'material-groups', title: 'Группы материалов', count: materials.groups.length },
+]);
 
 function startEdit(item: RefItem) {
   editingId.value = item.id;
   editValue.value = item.value;
 }
-
 function cancelEdit() {
   editingId.value = null;
   editValue.value = '';
 }
-
 async function saveEdit(item: RefItem) {
   const v = editValue.value.trim();
   if (!v || v === item.value) {
@@ -178,32 +191,22 @@ async function saveEdit(item: RefItem) {
   try {
     await store.updateValue(item.id, v);
     cancelEdit();
-    $q.notify({ type: 'positive', message: 'Поле изменено', position: 'bottom' });
+    $q.notify({ type: 'positive', message: 'Поле изменено' });
   } catch {
-    $q.notify({
-      type: 'negative',
-      message: 'Не удалось изменить',
-      position: 'bottom',
-    });
+    $q.notify({ type: 'negative', message: 'Не удалось изменить' });
   }
 }
-
 async function add() {
   const v = newValue.value.trim();
   if (!v) return;
   try {
-    await store.addValue(selected.value, v);
+    await store.addValue(refCategory.value, v);
     newValue.value = '';
-    $q.notify({ type: 'positive', message: 'Марка добавлена', position: 'bottom' });
+    $q.notify({ type: 'positive', message: 'Добавлено' });
   } catch {
-    $q.notify({
-      type: 'negative',
-      message: 'Не удалось добавить — возможно, уже есть',
-      position: 'bottom',
-    });
+    $q.notify({ type: 'negative', message: 'Не удалось добавить' });
   }
 }
-
 function remove(item: RefItem) {
   $q.dialog({
     title: 'Удаление',
@@ -211,22 +214,19 @@ function remove(item: RefItem) {
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    try {
-      void store.removeValue(item.id);
-      $q.notify({ type: 'negative', message: 'Удалено', position: 'bottom' });
-    } catch {
-      $q.notify({
-        type: 'negative',
-        message: 'Не удалось удалить',
-        position: 'bottom',
-      });
-    }
+    void (async () => {
+      try {
+        await store.removeValue(item.id);
+        $q.notify({ type: 'negative', message: 'Удалено' });
+      } catch {
+        $q.notify({ type: 'negative', message: 'Не удалось удалить' });
+      }
+    });
   });
 }
 
 onMounted(() => {
   void store.fetchAll();
+  void materials.fetchAll(); // счётчики марок/групп в левом списке
 });
 </script>
-
-<style scoped></style>
