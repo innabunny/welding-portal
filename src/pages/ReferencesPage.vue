@@ -124,7 +124,7 @@
                         icon="delete"
                         size="md"
                         color="red-5"
-                        @click="remove(item)"
+                        @click="removeItem(item)"
                       />
                     </div>
                   </q-item-section>
@@ -138,6 +138,13 @@
         </div>
       </div>
     </div>
+
+    <ConfirmDeleteDialog
+      v-model="confirmOpen"
+      :message="`Удалить «${toDelete?.value}» из справочника?`"
+      :highlight="toDelete?.value"
+      @confirm="doRemove"
+    />
   </q-page>
 </template>
 
@@ -149,6 +156,7 @@ import { useMaterialsStore } from '@/stores/materials';
 import { REF_TITLES, type RefItem, type RefCategory } from '@/shared/types/references';
 import MaterialsPanel from '@/components/references/MaterialsPanel.vue';
 import MaterialGroupsPanel from '@/components/references/MaterialGroupsPanel.vue';
+import ConfirmDeleteDialog from '@/components/common/ConfirmDeleteDialog.vue';
 
 type NavKey = RefCategory | 'material-groups';
 
@@ -162,6 +170,8 @@ const selected = ref<NavKey>('materials');
 const newValue = ref('');
 const editingId = ref<number | null>(null);
 const editValue = ref('');
+const toDelete = ref<RefItem | null>(null);
+const confirmOpen = ref(false);
 
 const refCategory = computed(() => selected.value as RefCategory);
 
@@ -207,22 +217,20 @@ async function add() {
     $q.notify({ type: 'negative', message: 'Не удалось добавить' });
   }
 }
-function remove(item: RefItem) {
-  $q.dialog({
-    title: 'Удаление',
-    message: `Удалить «${item.value}» из справочника?`,
-    cancel: true,
-    persistent: true,
-  }).onOk(() => {
-    void (async () => {
-      try {
-        await store.removeValue(item.id);
-        $q.notify({ type: 'negative', message: 'Удалено' });
-      } catch {
-        $q.notify({ type: 'negative', message: 'Не удалось удалить' });
-      }
-    });
-  });
+
+function removeItem(item: RefItem) {
+  toDelete.value = item;
+  confirmOpen.value = true;
+}
+
+async function doRemove() {
+  if (!toDelete.value) return;
+  try {
+    await store.removeValue(toDelete.value.id);
+    $q.notify({ type: 'negative', message: 'Удалено' });
+  } catch {
+    $q.notify({ type: 'negative', message: 'Не удалось удалить' });
+  }
 }
 
 onMounted(() => {

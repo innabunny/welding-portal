@@ -56,7 +56,7 @@
               dense
               round
               icon="delete"
-              size="sm"
+              size="md"
               color="red-5"
               hover
               @click="confirmRemove(props.row)"
@@ -71,6 +71,12 @@
 
       <EquipmentFormDialog v-model="dialogOpen" :item="editing" @save="handleSave" />
     </div>
+    <ConfirmDeleteDialog
+      v-model="confirmOpen"
+      :message="`Удалить ${toDelete?.name}`"
+      :highlight="toDelete?.name"
+      @confirm="doRemove"
+    />
   </q-page>
 </template>
 
@@ -81,6 +87,7 @@ import { useEquipmentStore } from '@/stores/equipment';
 import { useWorkshopStore } from '@/stores/workshop';
 import type { Equipment } from '@/shared/types/equipment';
 import EquipmentFormDialog from '@/components/equipment/EquipmentFormDialog.vue';
+import ConfirmDeleteDialog from '@/components/common/ConfirmDeleteDialog.vue';
 
 const $q = useQuasar();
 const store = useEquipmentStore();
@@ -89,6 +96,8 @@ const workshopStore = useWorkshopStore();
 const search = ref('');
 const dialogOpen = ref(false);
 const editing = ref<Equipment | null>(null); // null = режим создания
+const confirmOpen = ref(false);
+const toDelete = ref<Equipment | null>(null);
 
 const columns: QTableColumn<Equipment>[] = [
   { name: 'name', label: 'Наименование', field: 'name', align: 'left', sortable: true },
@@ -143,27 +152,26 @@ async function handleSave(data: Omit<Equipment, 'id'>) {
 }
 
 function confirmRemove(row: Equipment) {
-  $q.dialog({
-    title: 'Удаление',
-    message: `Удалить «${row.name}»?`,
-    cancel: true,
-    persistent: true,
-  }).onOk(() => {
-    try {
-      void store.remove(row.id);
-      $q.notify({
-        type: 'negative',
-        message: 'Оборудование удалено',
-        position: 'bottom',
-      });
-    } catch {
-      $q.notify({
-        type: 'negative',
-        message: 'Не удалось удалить',
-        position: 'bottom',
-      });
-    }
-  });
+  toDelete.value = row;
+  confirmOpen.value = true;
+}
+
+async function doRemove() {
+  if (!toDelete.value) return;
+  try {
+    await store.remove(toDelete?.value.id);
+    $q.notify({
+      type: 'negative',
+      message: 'Оборудование удалено',
+      position: 'bottom',
+    });
+  } catch {
+    $q.notify({
+      type: 'negative',
+      message: 'Не удалось удалить',
+      position: 'bottom',
+    });
+  }
 }
 
 onMounted(() => {
