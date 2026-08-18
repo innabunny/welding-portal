@@ -158,6 +158,9 @@ function onSubmit() {
   overflow: hidden;
   background: var(--app-surface);
   box-shadow: 0 24px 60px -20px rgba(16, 48, 42, 0.45);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
 }
 .wf-head {
   position: relative;
@@ -168,6 +171,7 @@ function onSubmit() {
   color: #fff;
   background: linear-gradient(135deg, var(--app-accent-dark) 0%, var(--app-accent) 100%);
   overflow: hidden;
+  flex: 0 0 auto;
 }
 .wf-head__glow {
   position: absolute;
@@ -203,6 +207,11 @@ function onSubmit() {
   color: rgba(255, 255, 255, 0.85);
 }
 .wf-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
   padding: 22px;
 }
 .wf-label {
@@ -218,6 +227,7 @@ function onSubmit() {
 }
 .wf-actions {
   padding: 14px 22px;
+  flex: 0 0 auto;
 }
 .wf-submit {
   border-radius: 10px;

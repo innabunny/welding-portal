@@ -21,6 +21,10 @@ export const useUsersStore = defineStore('users', () => {
     if (idx !== -1) items.value[idx] = updated;
   }
 
+  async function update(id: number, data: Partial<Omit<User, 'id'>>) {
+    replaceLocal(await usersApi.update(id, data));
+  }
+
   async function add(data: Omit<User, 'id'>) {
     items.value.push(await usersApi.create(data));
   }
@@ -45,5 +49,16 @@ export const useUsersStore = defineStore('users', () => {
     items.value = items.value.filter((u) => u.id !== id);
   }
 
-  return { items, loading, fetchAll, add, changeRole, changeWorkshop, resetPassword, toggleActive, remove };
+  return {
+    items,
+    loading,
+    fetchAll,
+    add,
+    changeRole,
+    changeWorkshop,
+    resetPassword,
+    toggleActive,
+    remove,
+    update,
+  };
 });

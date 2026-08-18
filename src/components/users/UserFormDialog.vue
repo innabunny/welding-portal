@@ -7,8 +7,12 @@
           <q-icon name="person_add" size="24px" />
         </div>
         <div>
-          <div class="user-dialog__title">Новый пользователь</div>
-          <div class="user-dialog__subtitle">Сотрудник или администратор портала</div>
+          <div class="user-dialog__title">
+            {{ isEdit ? 'Редактирование' : 'Новый пользователь' }}
+          </div>
+          <div class="user-dialog__subtitle">
+            {{ isEdit ? 'Изменение данных пользователя' : 'Сотрудник или администратор портала' }}
+          </div>
         </div>
       </div>
 
@@ -32,12 +36,12 @@
 
           <q-input
             v-model="form.password"
-            label="Пароль"
+            :label="isEdit ? 'Новый пароль (пусто -не менять) ' : 'Пароль'"
             :type="showPassword ? 'text' : 'password'"
             outlined
             dense
             lazy-rules
-            :rules="[(v: string) => (v?.length ?? 0) >= 4 || 'Минимум 4 символа']"
+            :rules="passwordRules"
             class="q-mb-md"
           >
             <template #prepend><q-icon name="lock" /></template>
@@ -115,7 +119,7 @@
           <q-btn
             unelevated
             no-caps
-            label="Создать"
+            :label="isEdit ? 'Сохранить' : 'Создать'"
             type="submit"
             color="primary"
             :disable="!isFilled"
@@ -132,7 +136,7 @@ import type { QForm } from 'quasar';
 import { ROLE_LABELS, type User, type UserRole } from '@/shared/types/user';
 import { useWorkshopStore } from '@/stores/workshop';
 
-const props = defineProps<{ modelValue: boolean }>();
+const props = defineProps<{ modelValue: boolean; item?: User | null }>();
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];
   save: [data: Omit<User, 'id'>];
@@ -172,22 +176,28 @@ const initialForm = (): Omit<User, 'id'> => ({
 const form = reactive<Omit<User, 'id'>>(initialForm());
 
 const isAdmin = computed(() => form.role === 'admin');
+const isEdit = computed(() => props.item != null);
 
 const workshopOptions = computed(() =>
   workshopStore.items.map((w) => ({ label: w.name, value: w.id })),
 );
 
-// то самое правило: цех обязателен всем, кроме админа
+// цех обязателен всем, кроме админа
 const workshopRules = computed(() =>
   isAdmin.value ? [] : [(v: number | null) => v != null || 'Выберите цех'],
 );
 
-// для disabled-состояния кнопки (не про безопасность, только UX)
+const passwordRules = computed(() =>
+  isEdit.value
+    ? [(v: string) => !v || v.length >= 4 || 'Минимум 4 символа'] // пусто — ок, иначе ≥4
+    : [(v: string) => (v?.length ?? 0) >= 4 || 'Минимум 4 символа'],
+);
+// для disabled-состояния кнопки
 const isFilled = computed(
   () =>
     !!form.name &&
     !!form.login &&
-    (form.password?.length ?? 0) >= 4 &&
+    (isEdit.value || (form.password?.length ?? 0) >= 4) &&
     (isAdmin.value || form.workshopId != null),
 );
 
@@ -204,14 +214,20 @@ watch(
   () => props.modelValue,
   (isOpen) => {
     if (!isOpen) return;
-    Object.assign(form, initialForm());
+    if (props.item) {
+      Object.assign(form, { ...props.item, password: '' });
+    } else {
+      Object.assign(form, initialForm());
+    }
     showPassword.value = false;
     void nextTick(() => formRef.value?.resetValidation());
   },
 );
 
 function onSubmit() {
-  emit('save', { ...form });
+  const payload = { ...form };
+  if (isEdit.value && !payload.password) delete (payload as Partial<typeof payload>).password;
+  emit('save', payload);
 }
 </script>
 
