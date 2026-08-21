@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <div class="row items-center q-mb-md">
       <div class="text-subtitle1 text-weight-medium" style="color: var(--app-ink)">
         Основные материалы

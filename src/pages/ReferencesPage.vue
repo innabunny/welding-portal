@@ -29,9 +29,12 @@
 
         <!-- деталь -->
         <div class="col-12 col-sm-8 col-md-9">
-          <!-- новые панели -->
-          <MaterialsPanel v-if="selected === 'materials'" />
-          <MaterialGroupsPanel v-else-if="selected === 'material-groups'" />
+
+
+            <!-- новые панели -->
+            <MaterialsPanel v-if="selected === 'materials'" />
+            <MaterialGroupsPanel v-else-if="selected === 'material-groups'" />
+
 
           <!-- прежний список RefItem для остальных категорий -->
           <q-card v-else flat bordered>

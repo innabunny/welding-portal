@@ -1,6 +1,8 @@
 export interface MaterialGroup {
   id: number;
-  code: string;
+  code: string; // 'стали', 'титан'...
+  wires: string[]; // допустимые проволоки
+  fluxes: string[]; // допустимые флюсы
 }
 
 export interface Material {

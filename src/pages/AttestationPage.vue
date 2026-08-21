@@ -29,7 +29,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="new" class="q-pa-none">
-          <div class="text-grey-6">Новая аттестация — в работе.</div>
+          <AttestationForm />
         </q-tab-panel>
 
         <q-tab-panel name="help" class="q-pa-none">
@@ -46,6 +46,7 @@ import { useWorkshopStore } from '@/stores/workshop';
 import { useEquipmentStore } from '@/stores/equipment';
 import ProtocolHelp from '@/components/attestation/ProtocolHelp.vue';
 import WeldersTab from '@/components/attestation/welders/WeldersTab.vue';
+import AttestationForm from '@/components/attestation/AttestationForm.vue';
 import type { Welder } from '@/shared/types/welders';
 
 const workshopStore = useWorkshopStore();
