@@ -16,6 +16,7 @@
         <q-tab name="welders" label="Сварщики" />
         <q-tab name="registry" label="Реестр аттестаций" />
         <q-tab name="new" label="Новая аттестация" />
+        <q-tab name="orders" label="Заявки" />
         <q-tab name="help" label="Как заполнять" />
       </q-tabs>
 
@@ -29,7 +30,11 @@
         </q-tab-panel>
 
         <q-tab-panel name="new" class="q-pa-none">
-          <AttestationForm />
+          <AttestationForm :welder="attestTarget" :edit-item="editTarget" />
+        </q-tab-panel>
+
+        <q-tab-panel name="orders" class="q-pa-none">
+          <OrdersTab @edit="startEdit" />
         </q-tab-panel>
 
         <q-tab-panel name="help" class="q-pa-none">
@@ -46,17 +51,26 @@ import { useWorkshopStore } from '@/stores/workshop';
 import { useEquipmentStore } from '@/stores/equipment';
 import ProtocolHelp from '@/components/attestation/ProtocolHelp.vue';
 import WeldersTab from '@/components/attestation/welders/WeldersTab.vue';
-import AttestationForm from '@/components/attestation/AttestationForm.vue';
+import AttestationForm from '@/components/attestation/attestation-form/AttestationForm.vue';
 import type { Welder } from '@/shared/types/welders';
+import OrdersTab from '@/components/attestation/OrdersTab.vue';
+import type { AttestationListItem } from '@/shared/types/attestation';
 
 const workshopStore = useWorkshopStore();
 const equipmentStore = useEquipmentStore();
 
-const tab = ref<'welders' | 'registry' | 'new' | 'help'>('welders');
+const tab = ref<'welders' | 'registry' | 'new' | 'orders' | 'help'>('welders');
+const editTarget = ref<AttestationListItem | null>(null);
 
 const attestTarget = ref<Welder | null>(null);
 function startAttestation(w: Welder) {
-  attestTarget.value = w; // передадим в форму «Новой аттестации», когда соберём её
+  attestTarget.value = w;
+  tab.value = 'new';
+}
+
+function startEdit(item: AttestationListItem) {
+  editTarget.value = item;
+  attestTarget.value = null;
   tab.value = 'new';
 }
 
