@@ -2,15 +2,35 @@
   <div class="af-outer">
     <q-card flat bordered class="af-card">
       <q-card-section>
-        <div class="af-welder" v-if="welderName">
-          <q-icon name="engineering" size="22px" color="primary" />
-          <div>
-            <div class="af-welder__name">{{ welderName }}</div>
-            <div class="af-welder__sub">Аттестуемый сварщик</div>
+        <div class="af-grid2 af-welder-field">
+          <div class="af-field">
+            <div class="af-label">Сварщик</div>
+            <q-select
+              v-model="selectedWelderId"
+              :options="welderOptions"
+              emit-value
+              map-options
+              outlined
+              dense
+              placeholder="Выберите сварщика"
+              :error="showErrors && !selectedWelderId"
+              error-message="Обязательно"
+              hide-bottom-space
+            />
           </div>
-        </div>
-        <div class="af-welder af-welder--empty" v-else>
-          Сварщик не выбран — вернитесь на вкладку «Сварщики» и нажмите «Аттестовать»
+
+          <div class="af-field">
+            <div class="af-label">Вид аттестации</div>
+            <q-select
+              v-model="kind"
+              :options="KIND_OPTIONS"
+              emit-value
+              map-options
+              outlined
+              dense
+              hide-bottom-space
+            />
+          </div>
         </div>
         <div class="af-grid2">
           <div class="af-field">
@@ -23,6 +43,7 @@
               outlined
               dense
               placeholder="Выберите способ"
+              hide-bottom-space
             />
           </div>
 
@@ -37,6 +58,7 @@
               dense
               :disable="!form.methodId"
               placeholder="Сначала выберите способ"
+              hide-bottom-space
             />
           </div>
         </div>
@@ -57,6 +79,7 @@
               :material-options="materialOptions"
               :flux-options="fluxOptions"
               :wire-options="wireOptions"
+              :gas-options="gasOptions"
               :show-errors="showErrors"
               @update:model-value="(v) => updatePair(i, v)"
               @remove="removePair(i)"
@@ -106,11 +129,12 @@
 
   <OrdersDialog
     v-model="ordersOpen"
-    :welder-name="props.welder?.fio ?? ''"
-    :welder-workshop="props.welder?.workshopName ?? ''"
+    :welder-name="selectedWelderName"
+    :welder-workshop="selectedWelderWorkshop"
     :method-name="selectedMethodName"
     :group-name="selectedGroupName"
     :pairs="pairs"
+    :kind="kind"
     :controls="controls"
     :material-label="materialLabel"
   />
@@ -131,12 +155,15 @@ import { CONTROL_OPTIONS } from '@/shared/constants/attestation.js';
 import type { Welder } from '@/shared/types/welders.js';
 import OrdersDialog from '../OrdersDialog.vue';
 import { useWelderDirectoryStore } from '@/stores/welderDirectory.js';
+import { KIND_OPTIONS, type AttestationKind } from '@/shared/types/attestation';
+import { useReferenceStore } from '@/stores/references.js';
 
 const props = defineProps<{ welder: Welder | null; editItem?: AttestationListItem | null }>();
 
 const equipmentStore = useEquipmentStore();
 const materialsStore = useMaterialsStore();
 const welderStore = useWelderDirectoryStore();
+const referencesStore = useReferenceStore();
 const { methods } = storeToRefs(equipmentStore);
 const { groups } = storeToRefs(materialsStore);
 const attestationsStore = useAttestationsStore();
@@ -160,6 +187,12 @@ const editId = ref<number | null>(null);
 const canAddPair = computed(() => pairs.length < MAX_PAIRS);
 const canRemovePair = computed(() => pairs.length > 1);
 const ordersOpen = ref(false);
+const selectedWelderId = ref<number | null>(null);
+const kind = ref<AttestationKind>('первичная');
+
+const gasOptions = computed(() =>
+  (referencesStore.byCategory['gases'] ?? []).map((r) => ({ label: r.value, value: r.value })),
+);
 
 function addPair() {
   if (canAddPair.value) {
@@ -175,11 +208,11 @@ function removePair(index: number) {
   if (canRemovePair.value) pairs.splice(index, 1);
 }
 
-const welderName = computed(
-  () =>
-    props.welder?.fio ??
-    welderStore.items.find((w) => w.id === props.editItem?.welderId)?.fio ??
-    '',
+const selectedWelderName = computed(
+  () => welderStore.items.find((w) => w.id === selectedWelderId.value)?.fio ?? '',
+);
+const selectedWelderWorkshop = computed(
+  () => welderStore.items.find((w) => w.id === selectedWelderId.value)?.workshopName ?? '',
 );
 
 const groupMaterials = computed(() =>
@@ -211,6 +244,7 @@ function isPairComplete(p: MaterialPair): boolean {
     p.thicknessMax !== null &&
     !!p.wireValue &&
     p.fluxValue !== null &&
+    !!p.gasValue &&
     !!p.position &&
     !!p.preheat &&
     !!p.heatTreatment
@@ -230,11 +264,13 @@ const selectedGroupName = computed(
 );
 
 async function onSubmit() {
-  const welderId = props.editItem?.welderId ?? props.welder?.id ?? null;
-  if (!welderId) {
-    $q.notify({ type: 'negative', message: 'Сварщик не определён' });
+  showErrors.value = false;
+  if (!selectedWelderId.value) {
+    showErrors.value = true;
+    $q.notify({ type: 'negative', message: 'Выберите сварщика' });
     return;
   }
+
   if (!form.methodId || !form.groupId) {
     $q.notify({ type: 'negative', message: 'Выберите способ и группу' });
     return;
@@ -247,7 +283,8 @@ async function onSubmit() {
   }
 
   const draft: AttestationDraft = {
-    welderId: welderId,
+    welderId: selectedWelderId.value,
+    kind: kind.value,
     methodId: form.methodId,
     groupId: form.groupId,
     controls: controls.value,
@@ -260,6 +297,7 @@ async function onSubmit() {
       thicknessMax: p.thicknessMax,
       wire: p.wireValue ?? '',
       flux: p.fluxValue ?? '',
+      gas: p.gasValue ?? '',
       position: p.position ?? '',
       preheat: p.preheat ?? '',
       heatTreatment: p.heatTreatment ?? '',
@@ -279,6 +317,8 @@ async function onSubmit() {
   }
 }
 
+const welderOptions = computed(() => welderStore.items.map((w) => ({ label: w.fio, value: w.id })));
+
 watch(
   () => form.groupId,
   () => {
@@ -293,12 +333,18 @@ watch(
 watch(
   () => props.editItem,
   async (item) => {
-    if (!item) return;
+    if (!item) {
+      editId.value = null;
+      showErrors.value = false;
+      kind.value = 'первичная';
+      return;
+    }
     loadingEdit.value = true;
     editId.value = item.id;
     form.methodId = item.methodId;
     form.groupId = item.groupId;
     controls.value = [...item.controls];
+    kind.value = item.kind;
     pairs.splice(
       0,
       pairs.length,
@@ -312,6 +358,7 @@ watch(
         thicknessMax: it.thicknessMax === null ? null : Number(it.thicknessMax),
         wireValue: it.wire,
         fluxValue: it.flux,
+        gasValue: it.gas,
         position: it.position,
         preheat: it.preheat,
         heatTreatment: it.heatTreatment,
@@ -324,9 +371,19 @@ watch(
   { immediate: true },
 );
 
+watch(
+  [() => props.welder, () => props.editItem],
+  () => {
+    if (props.editItem) selectedWelderId.value = props.editItem.welderId;
+    else if (props.welder) selectedWelderId.value = props.welder.id;
+  },
+  { immediate: true },
+);
+
 onMounted(() => {
   void materialsStore.fetchAll();
   void welderStore.fetchAll();
+  void referencesStore.fetchAll();
 });
 </script>
 
@@ -347,31 +404,12 @@ onMounted(() => {
   gap: 16px;
 }
 
-.af-welder {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  background: var(--app-bg);
-  border-radius: 10px;
-}
-.af-welder__name {
-  font-weight: 600;
-  color: var(--app-ink);
-}
-.af-welder__sub {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--app-ink-soft);
-}
-.af-welder--empty {
-  color: var(--app-ink-soft);
-  font-size: 13px;
-}
 .af-field {
   min-width: 0;
+}
+
+.af-welder-field {
+  margin-bottom: 20px;
 }
 
 .af-label {

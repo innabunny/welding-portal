@@ -126,6 +126,22 @@
       </div>
 
       <div class="pf">
+        <div class="pf__label">Защитный газ</div>
+        <q-select
+          :model-value="modelValue.gasValue"
+          @update:model-value="(v) => patch({ gasValue: v })"
+          :options="gasOptions"
+          emit-value
+          map-options
+          outlined
+          dense
+          :error="showErrors && modelValue.gasValue === null"
+          error-message="Обязательно"
+          hide-bottom-space
+        />
+      </div>
+
+      <div class="pf">
         <div class="pf__label">Положение шва</div>
         <q-select
           :model-value="modelValue.position"
@@ -202,6 +218,7 @@ const props = defineProps<{
   materialOptions: { label: string; value: number }[];
   wireOptions: { label: string; value: string }[];
   fluxOptions: { label: string; value: string }[];
+  gasOptions: { label: string; value: string }[];
 }>();
 const emit = defineEmits<{
   'update:modelValue': [value: MaterialPair];

@@ -10,8 +10,8 @@
 
     <q-separator />
 
-    <q-list dense>
-      <q-item v-for="row in help" :key="row.field">
+    <q-list dense class="q-pt-md">
+      <q-item v-for="row in help" :key="row.field" class="q-mb-sm">
         <q-item-section>
           <q-item-label class="text-weight-medium">{{ row.field }}</q-item-label>
           <q-item-label caption>{{ row.hint }}</q-item-label>

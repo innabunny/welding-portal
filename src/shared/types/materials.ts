@@ -10,5 +10,5 @@ export interface Material {
   marka: string;
   groupId: number | null;
   groupCode: string | null;
-  tensileStrength: number | null;
+  tensileStrength: string | null;
 }

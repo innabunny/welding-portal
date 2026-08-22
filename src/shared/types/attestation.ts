@@ -7,6 +7,7 @@ export interface MaterialPair {
   thicknessMin: number | null; // толщина от
   thicknessMax: number | null; // толщина до
   fluxValue: string | null; // марка флюса или null = «без флюса»
+  gasValue: string | null; // защитный газ
   wireValue: string | null; // электрод/проволока из наборов группы
   position: string | null; // положение шва
   preheat: string | null; // подогрев
@@ -24,6 +25,7 @@ export function blankPair(): MaterialPair {
     uniform: false,
     thicknessMin: null,
     thicknessMax: null,
+    gasValue: null,
     wireValue: null,
     fluxValue: null,
     position: null,
@@ -34,6 +36,7 @@ export function blankPair(): MaterialPair {
 
 export interface AttestationDraft {
   welderId: number;
+  kind: AttestationKind;
   methodId: string; // id способа — строковый ('rad', 'mad'...)
   groupId: number;
   controls: string[];
@@ -45,6 +48,7 @@ export interface AttestationDraft {
     thicknessMin: number | null;
     thicknessMax: number | null;
     wire: string;
+    gas: string;
     flux: string;
     position: string;
     preheat: string;
@@ -55,6 +59,7 @@ export interface AttestationDraft {
 export interface AttestationListItem {
   id: number;
   welderId: number;
+  kind: AttestationKind;
   methodId: string;
   groupId: number;
   controls: string[];
@@ -69,9 +74,17 @@ export interface AttestationListItem {
     thicknessMin: string | null; // приходит строкой ('1.0')
     thicknessMax: string | null;
     wire: string;
+    gas: string;
     flux: string;
     position: string;
     preheat: string;
     heatTreatment: string;
   }[];
 }
+
+export type AttestationKind = 'первичная' | 'периодическая';
+
+export const KIND_OPTIONS: { label: string; value: AttestationKind }[] = [
+  { label: 'Первичная', value: 'первичная' },
+  { label: 'Периодическая', value: 'периодическая' },
+];

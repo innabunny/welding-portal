@@ -118,7 +118,7 @@ main {
     border: none !important;
     overflow: visible !important;
   }
-  .q-dialog__backdrop {
+  .q-dialog__backdrop .orders-print-root .q-dialog__backdrop {
     display: none !important;
   }
   .orders-print-root .q-dialog__inner {
@@ -148,9 +148,5 @@ main {
     color: #000 !important;
     font-size: 12pt;
     line-height: 1.5;
-  }
-
-  @page {
-    margin: 20mm;
   }
 }
