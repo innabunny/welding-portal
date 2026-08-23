@@ -112,6 +112,7 @@ const blank = (): WelderInput => ({
   fio: '',
   birthDate: null,
   workshopId: null,
+  workshopNumber: null,
   weldingSince: null,
   rank: '',
   isActive: true,

@@ -27,6 +27,7 @@ export interface Welder {
   birthDate: string | null; // ISO
   workshopId: number | null;
   workshopName: string | null; // read-only
+  workshopNumber: string | null;  // read-only
   weldingSince: string | null; // ISO
   rank: string;
   isActive: boolean;

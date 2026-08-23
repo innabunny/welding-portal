@@ -277,8 +277,16 @@ const leafTotal = computed(() => tpl.value.pass.reduce((n, gr) => n + leafCount(
   padding: 4px;
   min-height: 250px;
 }
+.esk-svg {
+  width: auto; /* было 100% */
+  max-width: 600px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
 .col-esk :deep(svg) {
-  max-width: 100%;
+  max-width: 600px;
+  max-height: 100%;
   height: auto;
 }
 
@@ -350,6 +358,7 @@ const leafTotal = computed(() => tpl.value.pass.reduce((n, gr) => n + leafCount(
 }
 .passes .cd {
   width: 22px;
+  border-right: none;
 }
 .del {
   color: #c33;

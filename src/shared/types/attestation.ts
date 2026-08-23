@@ -56,6 +56,13 @@ export interface AttestationDraft {
   }[];
 }
 
+export type ExpiryState = '' | 'valid' | 'soon' | 'expired';
+
+export const EXPIRY_META: Record<Exclude<ExpiryState, ''>, { color: string; label: string }> = {
+  valid: { color: 'positive', label: 'Действует' },
+  soon: { color: 'warning', label: 'Истекает' },
+  expired: { color: 'negative', label: 'Просрочена' },
+};
 export interface AttestationListItem {
   id: number;
   welderId: number;
@@ -65,6 +72,11 @@ export interface AttestationListItem {
   controls: string[];
   status: string;
   createdAt: string; // ISO
+  attestedAt: string | null;
+  validUntil: string | null;
+  protocolNo: string;
+  certificateNo: string;
+  expiryState: ExpiryState;
   items: {
     id: number;
     sampleNo: string;

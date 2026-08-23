@@ -445,9 +445,6 @@ onMounted(() => {
 .af-add {
   margin-top: 12px;
 }
-:deep(.q-field--outlined .q-field__control) {
-  border-radius: 10px;
-}
 
 .af-controls {
   margin-top: 22px;

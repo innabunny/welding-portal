@@ -73,7 +73,9 @@
           <template v-if="i === 0">
             <td :rowspan="pairs.length" class="ps-c">{{ rowNo }}</td>
             <td :rowspan="pairs.length" class="ps-fio">{{ welder?.fio || '' }}</td>
-            <td :rowspan="pairs.length" class="ps-c">{{ welder?.workshopName || '' }}</td>
+            <td :rowspan="pairs.length">
+              <span class="ps-vert">{{ workshopLabel }}</span>
+            </td>
             <td :rowspan="pairs.length" class="ps-c">{{ birthYear }}</td>
             <td :rowspan="pairs.length">
               <span class="ps-vert">{{ welder?.education || '' }}</span>
@@ -208,6 +210,10 @@ const MONTHS = [
   'декабря',
 ];
 
+const workshopLabel = computed(
+  () => props.welder?.workshopNumber || props.welder?.workshopName || '',
+);
+
 const memberSlots = computed(() => Array.from({ length: props.membersCount }));
 
 const birthYear = computed(() =>
@@ -317,6 +323,7 @@ function tensileLabel(p: MaterialPair): string {
 .ps-vert {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+  text-orientation: sideways;
   display: inline-block;
   white-space: normal;
   max-height: 190px;
@@ -343,10 +350,13 @@ tbody td .ps-vert {
 .ps-signs {
   margin-top: 18px;
   font-size: 9pt;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .ps-sign-row {
   display: grid;
-  grid-template-columns: 1fr 220px 160px;
+  grid-template-columns: 200px 220px 160px;
   gap: 24px;
   align-items: end;
   margin-bottom: 14px;

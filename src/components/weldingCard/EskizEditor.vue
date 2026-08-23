@@ -1,40 +1,31 @@
 <template>
   <q-dialog v-model="open" persistent>
     <q-card class="eskiz-dialog">
-      <q-card-section class="row items-center q-pb-none">
+      <q-card-section class="eskiz-head">
         <div class="text-h6">Эскиз разделки — {{ params.jt }}</div>
         <q-space />
         <q-btn v-close-popup icon="close" flat round dense />
       </q-card-section>
 
-      <q-card-section class="row q-col-gutter-md">
-        <!-- параметры слева -->
-        <div class="col-12 col-sm-4 column q-gutter-sm">
-          <q-input v-model.number="params.s" type="number" label="Толщина s, мм" dense filled />
-          <q-input
-            v-model.number="params.alpha"
-            type="number"
+      <q-card-section class="eskiz-body">
+        <div class="eskiz-fields">
+          <NumberField v-model="params.s" label="Толщина s, мм" :step="0.5" :min="0.5" />
+          <NumberField
+            v-model="params.alpha"
             label="Угол разделки α, °"
-            dense
-            filled
+            :step="5"
+            :min="0"
+            :max="180"
           />
-          <q-input v-model.number="params.b" type="number" label="Зазор b, мм" dense filled />
-          <q-input v-model.number="params.c" type="number" label="Притупление c, мм" dense filled />
-          <q-input
-            v-model.number="params.n"
-            type="number"
-            label="Число проходов"
-            dense
-            filled
-            min="1"
-          />
-          <q-input v-model.number="params.g" type="number" label="Усиление g, мм" dense filled />
-          <q-input v-model.number="params.g1" type="number" label="Корень g₁, мм" dense filled />
-          <q-input v-model.number="params.f" type="number" label="Ширина шва f, мм" dense filled />
+          <NumberField v-model="params.b" label="Зазор b, мм" :step="0.5" :min="0" />
+          <NumberField v-model="params.c" label="Притупление c, мм" :step="0.5" :min="0" />
+          <NumberField v-model="params.n" label="Число проходов" :step="1" :min="1" />
+          <NumberField v-model="params.g" label="Усиление g, мм" :step="0.5" :min="0" />
+          <NumberField v-model="params.g1" label="Корень g₁, мм" :step="0.5" :min="0" />
+          <NumberField v-model="params.f" label="Ширина шва f, мм" :step="0.5" :min="0" />
         </div>
 
-        <!-- живое превью справа -->
-        <div class="col-12 col-sm-8 flex flex-center eskiz-preview">
+        <div class="eskiz-preview">
           <div class="eskiz-preview__svg" v-html="preview" />
         </div>
       </q-card-section>
@@ -51,6 +42,7 @@
 import { reactive, computed, watch } from 'vue';
 import { eskizSVG, type GrooveParams } from '@/shared/services/eskizGen';
 import { useWeldingCardStore } from '@/stores/weldingCard';
+import NumberField from '../common/NumberField.vue';
 
 const open = defineModel<boolean>({ default: false });
 
@@ -93,14 +85,52 @@ function insert(): void {
 
 <style scoped>
 .eskiz-dialog {
-  min-width: 720px;
+  min-width: 800px;
   max-width: 95vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--app-surface);
 }
+
+/* шапка: свой фон, чтобы контент не просвечивал */
+.eskiz-head {
+  display: flex;
+  align-items: center;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+  padding: 14px 20px;
+  flex: 0 0 auto;
+}
+
+/* тело: две колонки, отступ между ними */
+.eskiz-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 20px;
+  align-items: start; /* обе колонки от верхней линии */
+  padding: 20px;
+}
+
+.eskiz-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .eskiz-preview {
   background: #fff;
-  border: 1px solid #dcdfe3;
-  border-radius: 6px;
-  min-height: 260px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  /* min-width: 500px; */
 }
 .eskiz-preview__svg {
   width: 100%;
@@ -108,5 +138,12 @@ function insert(): void {
 .eskiz-preview__svg :deep(svg) {
   width: 100%;
   height: auto;
+  min-height: 300px;
+}
+
+.q-card__actions {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--app-border);
+  padding: 12px 20px;
 }
 </style>

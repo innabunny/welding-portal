@@ -26,7 +26,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="registry" class="q-pa-none">
-          <div class="text-grey-6">Реестр аттестаций — в работе.</div>
+          <RegistryTab />
         </q-tab-panel>
 
         <q-tab-panel name="new" class="q-pa-none">
@@ -55,6 +55,7 @@ import AttestationForm from '@/components/attestation/attestation-form/Attestati
 import type { Welder } from '@/shared/types/welders';
 import OrdersTab from '@/components/attestation/OrdersTab.vue';
 import type { AttestationListItem } from '@/shared/types/attestation';
+import RegistryTab from '@/components/attestation/RegistryTab.vue';
 
 const workshopStore = useWorkshopStore();
 const equipmentStore = useEquipmentStore();

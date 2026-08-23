@@ -146,6 +146,7 @@ export function eskizSVG(P: GrooveParams): string {
   const apexY = pyTop + (P.s - P.c) * scale;
   const tb = Math.tan(g.beta);
   const geo: Geo = { halfGap, openPx, apexY, pyTop, pyRoot, PW };
+  const PAD_L = 10;
 
   // левая пластина (разделка «в металле»)
   const platesA =
@@ -161,9 +162,15 @@ export function eskizSVG(P: GrooveParams): string {
   const rA = 34;
   const p1x = avX - rA * Math.sin(g.beta);
   const p1y = apexY - rA * Math.cos(g.beta);
+  const labR = rA + 14;
+  const labA = g.beta / 2;
+  const lx = avX - labR * Math.sin(labA);
+  const ly = apexY - labR * Math.cos(labA);
   const ang =
+    `<line x1="${avX}" y1="${apexY}" x2="${avX}" y2="${(apexY - rA - 10).toFixed(1)}" ` +
+    `stroke="${INK}" stroke-width=".4" stroke-dasharray="4 3"/>` +
     `<path d="M ${avX} ${apexY - rA} A ${rA} ${rA} 0 0 0 ${p1x.toFixed(1)} ${p1y.toFixed(1)}" fill="none" stroke="${INK}" stroke-width=".7"/>` +
-    `<text x="${avX - 18}" y="${apexY - rA - 2}" text-anchor="middle" font-size="11" fill="${INK}">${P.alpha / 2}°</text>`;
+    `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="11" fill="${INK}">${P.alpha / 2}°</text>`;
 
   // правая пластина (заполненный шов с валиками)
   const capH = Math.max(2, P.g * scale);
@@ -241,7 +248,7 @@ export function eskizSVG(P: GrooveParams): string {
     dimV(xB - halfGap - 14, pyRoot, spanBot, xB, xB, `g₁=${P.g1}`);
 
   return (
-    `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="h" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="6" stroke="#565656" stroke-width=".6"/></pattern></defs>` +
+    `<svg viewBox="${-PAD_L} 0 ${VW + PAD_L} ${VH}" xmlns="http://www.w3.org/2000/svg">"><defs><pattern id="h" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="6" stroke="#565656" stroke-width=".6"/></pattern></defs>` +
     `${platesA}${dims}${ang}` +
     `<path d="${plate(-1, xB, geo)}" fill="url(#h)" stroke="none"/><path d="${plate(1, xB, geo)}" fill="url(#h)" stroke="none"/>` +
     `<path d="${outB(-1)}" fill="none" stroke="${INK}" stroke-width="1.1"/><path d="${outB(1)}" fill="none" stroke="${INK}" stroke-width="1.1"/>` +

@@ -8,6 +8,7 @@
   --app-border: #dce8e3; // рамки
   --app-accent: #0f7a63; // = $primary из quasar.variables
   --app-accent-dark: #10302a; // = $secondary (тёмный изумруд)
+  --app-accent-glow: rgba(15, 122, 99, 0.12); // подсветка фокуса
 
   // светофор статусов
   --status-valid-bg: #e7f0ea;
@@ -43,7 +44,7 @@ main {
   width: 100%;
 }
 
-/* тонкий деловой скроллбар — глобально */
+/* ── Скроллбар ── */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -65,88 +66,95 @@ main {
   scrollbar-color: var(--app-border) transparent;
 }
 
-/* Единый стиль чекбоксов — деловой изумрудный */
+/* ── Чекбоксы ── */
 .q-checkbox {
   .q-checkbox__inner {
-    color: var(--app-border); // рамка невыбранного
-    font-size: 28px; // размер квадратика
+    color: var(--app-border);
+    font-size: 28px;
   }
-
-  /* галочка/фон выбранного */
   .q-checkbox__inner--truthy {
-    color: var(--app-accent); // изумруд из палитры
+    color: var(--app-accent);
   }
-
   .q-checkbox__bg {
-    border-radius: 8px; // скруглённый квадрат, не острый
+    border-radius: 8px;
     border-width: 2px;
   }
-
   .q-checkbox__label {
-    color: var(--app-ink); // цвет подписи
+    color: var(--app-ink);
     font-size: 14px;
   }
-
-  /* аккуратный ховер — лёгкая подсветка */
   &:hover .q-checkbox__inner:not(.q-checkbox__inner--truthy) {
     color: var(--app-ink-soft);
   }
 }
 
-@media print {
-  /* спрятать ВСЁ приложение */
-  body * {
-    visibility: hidden !important;
+/* ── Поля ввода: единый вид для input/select ── */
+.q-field--outlined {
+  .q-field__control {
+    border-radius: 10px;
+    background: var(--app-surface);
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+
+    /* рамка Quasar рисуется псевдоэлементом */
+    &:before {
+      border-color: var(--app-border);
+      border-width: 1px;
+    }
+    &:hover:before {
+      border-color: var(--app-ink-soft);
+    }
+    &:after {
+      border-width: 1.5px;
+    }
   }
 
-  /* показать только диалог заявок и всё внутри него */
-  .orders-print-root,
-  .orders-print-root * {
-    visibility: visible !important;
+  &.q-field--focused .q-field__control {
+    box-shadow: 0 0 0 3px var(--app-accent-glow);
   }
 
-  /* вытащить диалог в начало листа, убрать оверлей-центрирование */
-  .orders-print-root {
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    width: 100% !important;
-  }
-  .orders-print-root .od-card {
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    overflow: visible !important;
-  }
-  .q-dialog__backdrop .orders-print-root .q-dialog__backdrop {
-    display: none !important;
-  }
-  .orders-print-root .q-dialog__inner {
-    position: static !important;
-    padding: 0 !important;
-    display: block !important;
-    min-height: 0 !important;
+  .q-field__label {
+    color: var(--app-ink-soft);
+    font-size: 13px;
   }
 
-  /* элементы хрома внутри самой модалки прятать по-прежнему */
-  .no-print {
-    display: none !important;
+  .q-field__native,
+  .q-field__input {
+    color: var(--app-ink);
   }
 
-  /* все три заявки, каждая с новой страницы */
-  .orders-print-root .q-tab-panel {
-    display: block !important;
-    page-break-after: always;
-    padding: 0 !important;
+  .q-field__append .q-icon {
+    color: var(--app-ink-soft);
+    font-size: 20px;
   }
-  .orders-print-root .q-tab-panels,
-  .orders-print-root .q-panel {
-    height: auto !important;
-    overflow: visible !important;
+}
+
+/* ── Выпадающий список ── */
+.q-menu {
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  .q-item {
+    min-height: 38px;
+    font-size: 14px;
+    color: var(--app-ink);
   }
-  .orders-print-root .od-text {
-    color: #000 !important;
-    font-size: 12pt;
-    line-height: 1.5;
+  .q-item--active {
+    color: var(--app-accent);
+    font-weight: 600;
   }
+  .q-item:hover {
+    background: var(--app-bg);
+  }
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
