@@ -80,7 +80,7 @@
           class="full-width q-py-sm q-mt-sm"
           color="primary"
           size="md"
-          :loading="authStore.isLoggedIn"
+          :loading="isSubmitting"
         />
       </q-form>
     </q-card>
@@ -106,16 +106,20 @@ const credentials = reactive<Credentials>({ login: '', password: '' });
 const isPasswordHidden = ref<boolean>(true);
 const errorMessage = ref<string>('');
 
+const isSubmitting = ref(false);
+
 const handleLogin = async (): Promise<void> => {
   errorMessage.value = '';
+  isSubmitting.value = true;
   try {
     await authStore.login(credentials.login, credentials.password);
     $q.notify({ type: 'positive', message: 'Добро пожаловать!', position: 'bottom' });
     await router.push('/');
   } catch (e: unknown) {
-    const err = e as { message?: string };
-    errorMessage.value = err?.message || 'Неверный логин или пароль';
+    errorMessage.value = e instanceof Error ? e.message : 'Не удалось войти';
     $q.notify({ type: 'negative', message: errorMessage.value, position: 'bottom' });
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>
@@ -161,7 +165,7 @@ const handleLogin = async (): Promise<void> => {
 .glow-1 {
   width: 460px;
   height: 460px;
-  background: #d6efe6; ;
+  background: #d6efe6;
   top: -140px;
   right: -120px;
   animation: float1 16s ease-in-out infinite;
@@ -170,7 +174,7 @@ const handleLogin = async (): Promise<void> => {
 .glow-2 {
   width: 380px;
   height: 380px;
-  background:#d6efe6; ;
+  background: #d6efe6;
   bottom: -130px;
   left: -110px;
   animation: float2 20s ease-in-out infinite;

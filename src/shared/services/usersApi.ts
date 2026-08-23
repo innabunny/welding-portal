@@ -25,8 +25,8 @@ export const usersApi = {
   async remove(id: number): Promise<void> {
     await api.delete<User>(`/users/${id}/`);
   },
-  
-  async authenticate(login: string, password: string): Promise<LoginResult | null> {
+
+  async authenticate(login: string, password: string): Promise<LoginResult > {
     const { data } = await api.post<LoginResult>('/auth/login/', { login, password });
     return data;
   },
