@@ -2,7 +2,7 @@
   "name": "svarka-front",
   "version": "0.0.1",
   "description": "A Quasar Project",
-  "productName": "svarka-portal",
+  "productName": "Сварочный портал",
   "author": "Inna <innagosteva01@gmail.com>",
   "type": "module",
   "private": true,
