@@ -208,7 +208,7 @@ const handleLogin = async (): Promise<void> => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(q-primary);
+  background: var(--q-primary);
   box-shadow: 0 4px 12px rgba(15, 122, 99, 0.25);
   flex-shrink: 0;
 }
