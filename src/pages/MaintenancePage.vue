@@ -2,14 +2,14 @@
   <q-page class="q-pa-lg">
     <div class="page-content">
       <!-- ================= МАСТЕР: подача заявок ================= -->
-      <template v-if="isMaster">
+      <template v-if="canSubmit">
         <div class="row items-center q-mb-md">
           <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
             Заявка на обслуживание оборудования
           </div>
           <q-space />
           <q-btn
-          v-if="canCreate"
+            v-if="canCreate"
             unelevated
             no-caps
             icon="add"
@@ -19,14 +19,31 @@
           />
         </div>
         <!-- заглушка, если мастеру не назначен цех -->
-        <q-banner v-if="auth.user?.workshopId == null" rounded class="q-mb-md warn-banner">
+        <q-banner
+          v-if="isMaster && auth.user?.workshopId == null"
+          rounded
+          class="q-mb-md warn-banner"
+        >
           <template #avatar><q-icon name="warning_amber" color="orange-8" /></template>
           Вашей учётной записи не назначен цех. Обратитесь к администратору.
         </q-banner>
 
-        <q-banner v-else-if="myEquipment.length === 0" rounded class="q-mb-md warn-banner">
+        <q-banner
+          v-else-if="isMaster && availableEquipment.length === 0"
+          rounded
+          class="q-mb-md warn-banner"
+        >
           <template #avatar><q-icon name="info" color="orange-8" /></template>
           За вашим цехом не числится оборудование. Обратитесь к администратору.
+        </q-banner>
+
+        <q-banner
+          v-else-if="isAdmin && availableEquipment.length === 0"
+          rounded
+          class="q-mb-md warn-banner"
+        >
+          <template #avatar><q-icon name="info" color="orange-8" /></template>
+          В справочнике нет оборудования — добавьте его, чтобы подавать заявки.
         </q-banner>
 
         <div class="text-subtitle1 text-weight-medium q-mb-sm" style="color: var(--app-ink)">
@@ -68,8 +85,8 @@
       </template>
 
       <!-- ============= МЕХАНИК / АДМИН: обработка ============= -->
-      <template v-else>
-        <div class="row items-center q-mb-md">
+      <template v-if="canManage">
+        <div class="row items-center q-my-md">
           <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
             Заявки на ремонт оборудования
           </div>
@@ -145,6 +162,7 @@ import { useQuasar, type QTableColumn } from 'quasar';
 import { useServiceStore } from '@/stores/service';
 import { useAuthStore } from '@/stores/auth';
 import { useEquipmentStore } from '@/stores/equipment';
+import { useWorkshopStore } from '@/stores/workshop';
 import { PRIORITY_META, STATUS_META, STATUSES } from '@/shared/composables/useServiceRequests';
 import type {
   ServiceRequest,
@@ -158,11 +176,17 @@ const $q = useQuasar();
 const store = useServiceStore();
 const auth = useAuthStore();
 const equipmentStore = useEquipmentStore();
+const workhopStore = useWorkshopStore();
 
 const isMaster = computed(() => auth.user?.role === 'master');
+const canSubmit = computed(() => ['master', 'admin'].includes(auth.user?.role ?? ''));
+const canManage = computed(() => ['mechanic', 'admin'].includes(auth.user?.role ?? ''));
+const isAdmin = computed(() => auth.user?.role === 'admin');
 
 const dialogOpen = ref(false);
-const canCreate = computed(() => auth.user?.workshopId != null && myEquipment.value.length > 0);
+const canCreate = computed(
+  () => availableEquipment.value.length > 0 && (isAdmin.value || auth.user?.workshopId != null),
+);
 
 async function handleCreate(data: {
   equipmentId: number;
@@ -171,12 +195,12 @@ async function handleCreate(data: {
   priority: RequestPriority;
 }) {
   if (!auth.user) return;
-  const eq = myEquipment.value.find((e) => e.id === data.equipmentId);
+  const eq = availableEquipment.value.find((e) => e.id === data.equipmentId);
   await store.add({
     date: new Date().toISOString().slice(0, 10),
     equipmentId: data.equipmentId,
     equipmentName: eq?.name ?? '',
-    workshopId: auth.user.workshopId ?? null,
+    workshopId: eq?.workshopId ?? auth.user.workshopId ?? null,
     masterLogin: auth.user.login,
     masterName: auth.user.name,
     reason: data.reason,
@@ -191,11 +215,17 @@ async function handleCreate(data: {
 }
 
 // оборудование цеха мастера
-const myEquipment = computed(() =>
-  equipmentStore.items.filter((e) => e.workshopId === auth.user?.workshopId),
+const availableEquipment = computed(() =>
+  isAdmin.value
+    ? equipmentStore.items
+    : equipmentStore.items.filter((e) => e.workshopId === auth.user?.workshopId),
 );
+
 const equipmentOptions = computed(() =>
-  myEquipment.value.map((e) => ({ label: e.name, value: e.id })),
+  availableEquipment.value.map((e) => ({
+    label: isAdmin.value ? `${e.name} — ${workhopStore.workshopName(e.workshopId)}` : e.name,
+    value: e.id,
+  })),
 );
 
 // заявки текущего мастера
@@ -284,6 +314,7 @@ const manageColumns: QTableColumn<ServiceRequest>[] = [
 onMounted(() => {
   void store.fetchAll();
   void equipmentStore.fetchAll(); // для оборудования цеха мастера
+  void workhopStore.fetchAll();
 });
 </script>
 
