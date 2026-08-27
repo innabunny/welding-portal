@@ -1,3 +1,5 @@
+import type { RefCategory } from '../types/references';
+
 export type PassColDef = string | { g: string; c: string[] };
 export interface PassGroup {
   g: string;
@@ -23,7 +25,6 @@ export interface Template {
   pass: PassGroup[];
 }
 
-// ── шаблоны (перенос из 02-config.js, дословно) ──
 export const TPL: Record<string, Template> = {
   tig: {
     name: 'Ручная аргонодуговая, неплавящийся электрод (РАД)',
@@ -237,7 +238,7 @@ export const TPL: Record<string, Template> = {
   },
 };
 
-export const DICT_MAP: Record<string, string> = {
+export const DICT_MAP: Record<string, RefCategory> = {
   wire: 'wires',
   filler: 'wires',
   gas: 'gases',

@@ -38,7 +38,7 @@ export default defineConfig((ctx) => {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
 
-      publicPath: '/static/',
+      publicPath: ctx.prod ? '/static/' : '/',
       // define: {},
       // defineEnv: {}
       // ignorePublicFolder: true,

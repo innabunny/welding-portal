@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="page-content">
-
       <div class="text-h6 text-weight-medium q-mb-md" style="color: var(--app-ink)">
         Разработка технологической карты
       </div>
@@ -10,15 +9,15 @@
           <q-card-section class="q-gutter-md">
             <!-- шаг 1: способ сварки -->
             <q-select
-            v-model="method"
-            label="Способ сварки"
-            outlined
-            :options="cardStore.methods"
-            option-label="name"
-            option-value="id"
-            emit-value
-            map-options
-            @update:model-value="onMethodChange"
+              v-model="method"
+              label="Способ сварки"
+              outlined
+              :options="cardStore.methods"
+              option-label="name"
+              option-value="id"
+              emit-value
+              map-options
+              @update:model-value="onMethodChange"
             />
 
             <!-- шаг 2: оборудование этого способа -->
@@ -26,78 +25,97 @@
               <div class="text-subtitle2 text-grey-7">Оборудование</div>
               <div v-if="equipmentForMethod.length" class="eq-grid">
                 <q-card
-                v-for="eq in equipmentForMethod"
-                :key="eq.id"
-                flat
-                bordered
-                class="eq-card"
-                :class="{ 'eq-card--sel': cardStore.selectedEquipment?.id === eq.id }"
-                @click="cardStore.selectEquipment(eq)"
+                  v-for="eq in equipmentForMethod"
+                  :key="eq.id"
+                  flat
+                  bordered
+                  class="eq-card"
+                  :class="{ 'eq-card--sel': cardStore.selectedEquipment?.id === eq.id }"
+                  @click="cardStore.selectEquipment(eq)"
                 >
-                <div class="text-weight-medium">{{ eq.name }}</div>
-                <div class="text-caption text-grey-6">{{ methodName }}</div>
-              </q-card>
-            </div>
-            <q-banner v-else rounded class="warn-banner">
-              <template #avatar><q-icon name="info" color="orange-8" /></template>
-              Нет оборудования для этого способа. Добавьте его в разделе «Оборудование».
-            </q-banner>
-          </template>
-        </q-card-section>
+                  <div class="text-weight-medium">{{ eq.name }}</div>
+                  <div class="text-caption text-grey-6">{{ methodName }}</div>
+                </q-card>
+              </div>
+              <q-banner v-else rounded class="warn-banner">
+                <template #avatar><q-icon name="info" color="orange-8" /></template>
+                Нет оборудования для этого способа. Добавьте его в разделе «Оборудование».
+              </q-banner>
+            </template>
+          </q-card-section>
 
-        <q-card-actions align="right" class="q-pa-md">
+          <q-card-actions align="right" class="q-pa-md">
+            <q-btn
+              unelevated
+              no-caps
+              label="Начать карту"
+              color="primary"
+              :disable="!cardStore.canStart()"
+              @click="startCard"
+            />
+          </q-card-actions>
+        </q-card>
+      </template>
+
+      <template v-else>
+        <div class="row items-center q-mb-md">
+          <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
+            Карта · {{ cardStore.draft.equipment }}
+          </div>
+          <q-space />
           <q-btn
-          unelevated
-          no-caps
-          label="Начать карту"
-          color="primary"
-          :disable="!cardStore.canStart()"
-          @click="startCard"
+            v-if="cardStore.isFromArchive"
+            flat
+            no-caps
+            icon="arrow_back"
+            label="В архив"
+            color="grey-7"
+            class="q-mr-sm"
+            @click="backToArchive"
           />
-        </q-card-actions>
-      </q-card>
-    </template>
+          <q-btn
+            v-else
+            flat
+            no-caps
+            icon="arrow_back"
+            label="К выбору"
+            color="grey-7"
+            @click="cardStore.resetCard()"
+          />
+          <q-btn
+            unelevated
+            no-caps
+            icon="save"
+            label="Сохранить"
+            color="primary"
+            :loading="saving"
+            @click="saveCard"
+          />
+        </div>
+        <q-tabs
+          v-model="tab"
+          align="left"
+          no-caps
+          active-color="primary"
+          indicator-color="primary"
+          class="q-mb-md"
+        >
+          <q-tab name="form" label="Заполнение" />
+          <q-tab name="sheet" label="Бланк" />
+        </q-tabs>
 
-    <template v-else>
-      <div class="row items-center q-mb-md">
-        <div class="text-h6 text-weight-medium" style="color: var(--app-ink)">
-          Карта · {{ cardStore.draft.equipment }}
-        </div>
-        <q-space />
-        <q-btn
-        v-if="cardStore.isFromArchive"
-        flat
-        no-caps
-        icon="arrow_back"
-        label="В архив"
-        color="grey-7"
-        class="q-mr-sm"
-        @click="backToArchive"
-        />
-        <q-btn
-        v-else
-        flat
-        no-caps
-        icon="arrow_back"
-        label="К выбору"
-        color="grey-7"
-        @click="cardStore.resetCard()"
-        />
-        <q-btn
-          unelevated
-          no-caps
-          icon="save"
-          label="Сохранить"
-          color="primary"
-          :loading="saving"
-          @click="saveCard"
-          />
-        </div>
-        <CardSheet/>
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="form" class="q-pa-none">
+            <CardForm :show-errors="showErrors" />
+          </q-tab-panel>
+          <q-tab-panel name="sheet" class="q-pa-none">
+            <CardSheet />
+          </q-tab-panel>
+        </q-tab-panels>
       </template>
     </div>
-    </q-page>
-  </template>
+  </q-page>
+</template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
@@ -108,6 +126,7 @@ import { useEquipmentStore } from '@/stores/equipment';
 import { useAuthStore } from '@/stores/auth';
 import { useWeldingCardsArchiveStore } from '@/stores/weldingCardsArchive';
 import CardSheet from '@/components/weldingCard/CardSheet.vue';
+import CardForm from '@/components/weldingCard/CardForm.vue';
 
 const cardStore = useWeldingCardStore();
 const equipmentStore = useEquipmentStore();
@@ -116,6 +135,9 @@ const auth = useAuthStore();
 const archive = useWeldingCardsArchiveStore();
 const saving = ref(false);
 const router = useRouter();
+
+const tab = ref('form');
+const showErrors = ref(false);
 
 const method = computed({
   get: () => cardStore.selectedMethod?.id ?? null,
@@ -144,6 +166,7 @@ async function startCard() {
 async function saveCard() {
   const draft = cardStore.draft;
   if (!draft) return;
+  showErrors.value = true;
 
   // минимальная проверка — номер карты обязателен
   if (!draft.cardNo.trim()) {
